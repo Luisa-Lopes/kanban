@@ -31,7 +31,7 @@ const Signin = () => {
         if (res) {
             return;
         }
-        navigate("/board");
+        navigate("/home");
     };
 
     useEffect(() => {
