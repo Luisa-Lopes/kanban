@@ -1,6 +1,7 @@
 import RoutesApp from "./routes";
 import { AuthProvider } from "./contexts/auth";
 import background from "../src/assets/background.png";
+import { SidebarProvider } from "./contexts/sidebarProvider";
 
 /*
 const apiKey = import.meta.env.VITE_UNSPLASH_API_KEY;
@@ -15,11 +16,13 @@ function App() {
 
     return (
         <section
-            className="w-screen h-screen bg-cover bg-no-repeat flex "
+            className="w-screen min-h-screen h-auto bg-cover bg-no-repeat flex"
             style={{ backgroundImage: `url(${background})` }}
         >
             <AuthProvider>
-                <RoutesApp></RoutesApp>
+                <SidebarProvider>
+                    <RoutesApp></RoutesApp>
+                </SidebarProvider>
             </AuthProvider>
         </section>
     );
