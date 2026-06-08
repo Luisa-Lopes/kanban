@@ -1,87 +1,72 @@
 import {
-    CalendarIcon,
-    Cog8ToothIcon,
-    DocumentDuplicateIcon,
-    FolderOpenIcon,
-    HomeIcon,
-    UserGroupIcon,
-    XMarkIcon,
+  CalendarIcon,
+  Cog8ToothIcon,
+  DocumentDuplicateIcon,
+  FolderOpenIcon,
+  HomeIcon,
+  UserGroupIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import SidebarButton from "./components/SidebarButton";
 import { useSidebar } from "../../../contexts/sidebarProvider";
 
 const Sidebar = () => {
-    const { openSidebar, setOpenSidebar } = useSidebar();
+  const { openSidebar, setOpenSidebar } = useSidebar();
 
-    if (openSidebar) {
-        return (
-            <div
-                className="absolute h-screen w-screen z-20 transition-opacity duration-300 ease-in-out"
-                style={{
-                    backgroundColor: "rgba(0, 0, 0, 0.2)",
-                    opacity: openSidebar ? 1 : 0,
-                }}
-            >
-                <section
-                    className={`bg-[#86bafc] h-full flex flex-col px-5 py-6 transition-all duration-700 ease-in-out ${
-                        openSidebar ? "w-72" : "w-0 overflow-hidden"
-                    }`}
-                    style={{ width: 300 }}
-                >
-                    <div className="flex justify-end">
-                        <XMarkIcon
-                            className="cursor-pointer"
-                            width={30}
-                            height={30}
-                            color="#fbf8f8"
-                            onClick={() => {
-                                setOpenSidebar(false);
-                            }}
-                        />
-                    </div>
-                    <main className="flex flex-col gap-1 mt-4">
-                        <SidebarButton
-                            link={"/home"}
-                            title={"Home"}
-                            Icon={HomeIcon}
-                        />
+  if (!openSidebar) {
+    return null;
+  }
 
-                        <SidebarButton
-                            link={"/"}
-                            title={"Equipe"}
-                            Icon={UserGroupIcon}
-                        />
+  return (
+    <div className="fixed inset-0 z-40">
+      <button
+        type="button"
+        className="absolute inset-0 bg-slate-900/30"
+        onClick={() => setOpenSidebar(false)}
+        aria-label="Fechar menu lateral"
+      />
 
-                        <SidebarButton
-                            link={"/projects"}
-                            title={"Projetos"}
-                            Icon={FolderOpenIcon}
-                        />
+      <aside className="relative flex h-full w-72 flex-col bg-sky-600 px-5 py-6 text-white shadow-2xl">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs uppercase tracking-[0.24em] text-sky-100/80">
+              Menu
+            </p>
+            <h2 className="text-2xl font-semibold">Navegação</h2>
+          </div>
 
-                        <SidebarButton
-                            link={"/"}
-                            title={"Calendário"}
-                            Icon={CalendarIcon}
-                        />
+          <button
+            type="button"
+            onClick={() => setOpenSidebar(false)}
+            className="rounded-2xl bg-white/20 p-2 transition hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+            aria-label="Fechar menu lateral"
+          >
+            <XMarkIcon width={24} height={24} />
+          </button>
+        </div>
 
-                        <SidebarButton
-                            link={"/"}
-                            title={"Documentos"}
-                            Icon={DocumentDuplicateIcon}
-                        />
-                    </main>
+        <nav className="mt-8 flex flex-1 flex-col gap-2">
+          <SidebarButton link="/home" title="Home" Icon={HomeIcon} />
+          <SidebarButton link="/" title="Equipe" Icon={UserGroupIcon} />
+          <SidebarButton
+            link="/projects"
+            title="Projetos"
+            Icon={FolderOpenIcon}
+          />
+          <SidebarButton link="/" title="Calendário" Icon={CalendarIcon} />
+          <SidebarButton
+            link="/"
+            title="Documentos"
+            Icon={DocumentDuplicateIcon}
+          />
+        </nav>
 
-                    <footer className="mt-auto">
-                        <SidebarButton
-                            link={"/"}
-                            title={" Settings"}
-                            Icon={Cog8ToothIcon}
-                        />
-                    </footer>
-                </section>
-            </div>
-        );
-    }
+        <div className="mt-auto border-t border-white/20 pt-4">
+          <SidebarButton link="/" title="Configurações" Icon={Cog8ToothIcon} />
+        </div>
+      </aside>
+    </div>
+  );
 };
 
 export default Sidebar;

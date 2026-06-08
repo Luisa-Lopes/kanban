@@ -1,50 +1,46 @@
 import { Bars3Icon } from "@heroicons/react/24/solid";
-import PropTypes from "prop-types";
 import { useSidebar } from "../../../contexts/sidebarProvider";
 
 export const Header = () => {
-    const { openSidebar, setOpenSidebar } = useSidebar();
+  const { setOpenSidebar } = useSidebar();
 
-    return (
-        <header className="grid grid-rows-1 grid-cols-9 w-screen px-5 bg-[#B4D4FF] h-10 items-center shadow-[#86B6F6] shadow-md">
-            <div className="flex col-start-1 col-end-3 justify-between items-center">
-                <div>
-                    <Bars3Icon
-                        className="cursor-pointer"
-                        width={30}
-                        height={30}
-                        onClick={() => {
-                            setOpenSidebar(true);
-                        }}
-                    />
-                </div>
+  return (
+    <header className="flex items-center justify-between gap-4 bg-sky-600 px-5 py-3 text-white shadow-md">
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setOpenSidebar(true)}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20 transition hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+          aria-label="Abrir menu lateral"
+        >
+          <Bars3Icon width={24} height={24} />
+        </button>
 
-                <label className=" ">
-                    <input
-                        type="search"
-                        name="search"
-                        placeholder="Search"
-                        className="bg-no-repeat bg-right bg-[#EEF5FF] rounded-2xl px-2"
-                    ></input>
-                </label>
-            </div>
+        <div className="space-y-0.5">
+          <p className="text-xs uppercase tracking-[0.24em] text-white/80">
+            Painel
+          </p>
+          <h1 className="text-lg font-semibold">Kanban</h1>
+        </div>
+      </div>
 
-            <div className="col-start-4 col-end-7 flex justify-center">
-                <h1 className=" text-center">Kanban</h1>
-            </div>
+      <div className="flex flex-1 items-center justify-center">
+        <label className="relative w-full max-w-xl">
+          <span className="sr-only">Pesquisar</span>
+          <input
+            type="search"
+            name="search"
+            placeholder="Buscar projetos, usuários ou tarefas"
+            className="w-full rounded-2xl border border-white/30 bg-white/90 px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-white focus:ring-2 focus:ring-white/50"
+          />
+        </label>
+      </div>
 
-            <div className="col-start-7 col-end-9 flex justify-end">
-                <img
-                    className="rounded-full h-8 w-8 object-cover"
-                    src="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"
-                    alt="Placeholder"
-                />
-            </div>
-        </header>
-    );
-};
-
-Header.propTypes = {
-    image: PropTypes.string,
-    setImage: PropTypes.func,
+      <div className="hidden items-center gap-3 md:flex">
+        <span className="rounded-2xl bg-white/20 px-4 py-2 text-sm font-medium">
+          Admin
+        </span>
+      </div>
+    </header>
+  );
 };
