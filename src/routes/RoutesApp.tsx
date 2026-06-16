@@ -1,0 +1,50 @@
+import { Route, Routes } from "react-router-dom";
+import Home from "../Pages/Home";
+import Signin from "../Pages/Signin";
+import { PrivateRoute } from "./PrivateRoutes";
+import Projects from "../Pages/Projects";
+import ProjectsDetails from "../Pages/ProjectDetails";
+import LandingPage from "../Pages/LandingPage";
+import { AuthProvider } from "../contexts/auth";
+import { SidebarProvider } from "../contexts/sidebarProvider";
+
+function RoutesApp() {
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/signin" element={<Signin />} />
+      <Route
+        path="/home"
+        element={
+          <PrivateRoute>
+            <SidebarProvider>
+              <Home />
+            </SidebarProvider>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/projects"
+        element={
+          <PrivateRoute>
+            <SidebarProvider>
+              <Projects />
+            </SidebarProvider>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/projects/:id"
+        element={
+          <PrivateRoute>
+            <SidebarProvider>
+              <ProjectsDetails />
+            </SidebarProvider>
+          </PrivateRoute>
+        }
+      />
+    </Routes>
+  );
+}
+
+export default RoutesApp;

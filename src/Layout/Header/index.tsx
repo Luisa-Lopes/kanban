@@ -1,5 +1,5 @@
 import { Bars3Icon } from "@heroicons/react/24/solid";
-import { useSidebar } from "../../../contexts/sidebarProvider";
+import { useSidebar } from "../../contexts/sidebarProvider";
 
 export const Header = () => {
   const { setOpenSidebar } = useSidebar();

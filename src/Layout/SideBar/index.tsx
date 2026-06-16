@@ -8,7 +8,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import SidebarButton from "./components/SidebarButton";
-import { useSidebar } from "../../../contexts/sidebarProvider";
+import { useSidebar } from "../../contexts/sidebarProvider";
 
 const Sidebar = () => {
   const { openSidebar, setOpenSidebar } = useSidebar();
