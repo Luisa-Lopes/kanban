@@ -1,219 +1,187 @@
 import { useEffect, useState } from "react";
 import {
-    DragDropContext,
-    Draggable,
-    Droppable,
-    DropResult,
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
 } from "@hello-pangea/dnd";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
-import { formatDate } from "react-calendar/dist/cjs/shared/dateFormatter";
-import { ITasks } from "../..";
-import Calendar from "react-calendar";
-import {
-    DateToTimestamp,
-    TimestampToDate,
-} from "../../../../utils/DatesFuntions";
+import { TimestampToDate } from "../../../../utils/DatesFunctions";
+import { formatDate } from "react-calendar/src/shared/dateFormatter.js";
+import SprintHeader from "./Components/SprintHeader";
+import MainTaskCard from "./Components/MainTaskCard";
+import TaskColumn from "./Components/TaskColumn";
+import ModalTaskColumn from "./Components/ModalTaskColumn";
+import { ITasks } from "../../types";
 
 interface ISprint {
-    title: string;
-    tasks: ITasks;
-    startDate: number;
-    endDate: number;
+  title: string;
+  tasks: ITasks;
+  startDate: number;
+  endDate: number;
 }
 
 interface ISprints {
-    sprint: ISprint;
+  sprint: ISprint;
 }
 
 const Sprints = ({ sprint }: ISprints) => {
-    const [openCalendar, setOpenCalendar] = useState<boolean>(false);
-    const [clickSprint, setClickSprint] = useState<boolean>(false);
-    const [date, setDate] = useState<[Date, Date]>([new Date(), new Date()]);
-    const [tasks, setTasks] = useState<ITasks>(sprint.tasks);
+  const [openCalendar, setOpenCalendar] = useState<boolean>(false);
+  const [clickSprint, setClickSprint] = useState<boolean>(false);
+  const [date, setDate] = useState<[Date, Date]>([new Date(), new Date()]);
+  const [tasks, setTasks] = useState<ITasks>(sprint.tasks);
 
-    const startDate = formatDate("pt", date[0]);
-    const endDate = formatDate("pt", date[1]);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | undefined>();
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (sprint.startDate && sprint.endDate) {
-            let start = TimestampToDate({ timestamp: sprint.startDate });
-            let end = TimestampToDate({ timestamp: sprint.endDate });
-            setDate([start, end]);
-        } else {
-            setDate([new Date(), new Date()]);
-        }
-    }, [sprint?.endDate, sprint?.startDate]);
+  const startDate = formatDate("pt", date[0]);
+  const endDate = formatDate("pt", date[1]);
 
-    const onDragEnd = (result: DropResult) => {
-        if (!result.destination) return;
+  useEffect(() => {
+    if (sprint.startDate && sprint.endDate) {
+      let start = TimestampToDate({ timestamp: sprint.startDate });
+      let end = TimestampToDate({ timestamp: sprint.endDate });
+      setDate([start, end]);
+    } else {
+      setDate([new Date(), new Date()]);
+    }
+  }, [sprint?.endDate, sprint?.startDate]);
 
-        const { source, destination } = result;
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
 
-        if (
-            source.droppableId === destination.droppableId &&
-            source.index === destination.index
-        ) {
-            return;
-        }
+    const { source, destination } = result;
 
-        // Clonar as tarefas
-        const sourceTasks = [...tasks[source.droppableId]];
-        const destTasks = [...tasks[destination.droppableId]];
-        const [movedTask] = sourceTasks.splice(source.index, 1);
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
 
-        destTasks.splice(destination.index, 0, movedTask);
+    // Clonar as tarefas
+    const sourceTasks = [...tasks[source.droppableId]];
+    const destTasks = [...tasks[destination.droppableId]];
+    const [movedTask] = sourceTasks.splice(source.index, 1);
 
-        setTasks({
-            ...tasks,
-            [source.droppableId]: sourceTasks,
-            [destination.droppableId]: destTasks,
-        });
-    };
+    destTasks.splice(destination.index, 0, movedTask);
 
-    return (
-        <div
-            className="p-1 rounded-md w-full flex flex-col bg-white mb-3 shadow-lg"
-            style={{ maxWidth: "100%" }}
+    setTasks({
+      ...tasks,
+      [source.droppableId]: sourceTasks,
+      [destination.droppableId]: destTasks,
+    });
+  };
+
+  return (
+    <div
+      className="p-1 rounded-md w-full flex flex-col bg-blue-100 mb-3 shadow-lg"
+      style={{ maxWidth: "100%" }}
+    >
+      <SprintHeader
+        clickSprint={clickSprint}
+        setClickSprint={setClickSprint}
+        setOpenCalendar={setOpenCalendar}
+        openCalendar={openCalendar}
+        startDate={startDate}
+        endDate={endDate}
+        title={sprint.title}
+        setDate={setDate}
+        date={date}
+      />
+
+      {clickSprint && <hr />}
+
+      <main
+        className={`flex box-border overflow-hidden w-full transition-all duration-1000 ease-in-out ${
+          clickSprint ? "h-[330px]" : "h-0"
+        }`}
+      >
+        <section
+          className="flex "
+          style={{ minWidth: "100%", overflowX: "auto" }}
         >
-            <header className="py-1 flex w-full cursor-pointer">
-                {clickSprint ? (
-                    <ChevronDownIcon
-                        height={30}
-                        width={30}
-                        onClick={() => setClickSprint(!clickSprint)}
-                    />
-                ) : (
-                    <ChevronUpIcon
-                        height={30}
-                        width={30}
-                        onClick={() => setClickSprint(!clickSprint)}
-                    />
-                )}
+          <div
+            className="flex col-span-1 flex-col "
+            style={{
+              minHeight: 130,
+              minWidth: 250,
+              width: "80%",
+              maxWidth: 220,
+            }}
+          >
+            <h4 className="text-center font-bold text-lg mb-2">Task</h4>
 
-                <h5 className="p-auto my-auto font-semibold">
-                    {sprint?.title}
-                </h5>
-                <button
-                    className="relative border-gray-200 border-solid border-2 p-1 ml-auto rounded-md shadow-md"
-                    onClick={() => setOpenCalendar(!openCalendar)}
-                    style={{ width: "230px" }}
-                >
-                    {`${startDate} - ${endDate}`}
-                    {openCalendar && (
-                        <Calendar
-                            className="absolute right-0 top-10"
-                            onChange={(newDate: Date[]) => setDate(newDate)}
-                            value={date}
-                            calendarType="gregory"
-                            selectRange
-                        />
-                    )}
-                </button>
-            </header>
-            <hr />
+            <MainTaskCard
+              title="Reunião de Gente e Gestão"
+              description="Organizar, marcar, criar temas para reunião."
+            />
+          </div>
 
-            <main
-                className={`flex box-border overflow-hidden w-full transition-all duration-1000 ease-in-out ${
-                    clickSprint ? "h-[330px]" : "h-0"
-                }`}
-            >
-                <section
-                    className="flex "
-                    style={{ minWidth: "100%", overflowX: "auto" }}
-                >
+          <DragDropContext onDragEnd={onDragEnd}>
+            <div className="flex flex-grow gap-2 p-0" style={{ width: "100%" }}>
+              {Object.keys(tasks)?.map((columnId) => (
+                <Droppable key={columnId} droppableId={columnId}>
+                  {(provided) => (
                     <div
-                        className="flex col-span-1 flex-col "
-                        style={{
-                            height: 130,
-                            minWidth: 250,
-                            width: "80%",
-                            maxWidth: 220,
-                        }}
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      style={{
+                        width: "100%",
+                        minHeight: 250,
+                      }}
                     >
-                        <h4 className="text-center font-bold text-lg mb-2">
-                            Task
-                        </h4>
-                        <div
-                            className="bg-gray-300 rounded-lg shadow-md p-2 mx-auto"
-                            style={{ height: 130, width: 200 }}
+                      <h4 className="text-center font-bold text-lg mb-2">
+                        {columnId === "ToDo"
+                          ? "A Fazer"
+                          : columnId === "InProgress"
+                            ? "Em Andamento"
+                            : "Concluído"}
+                      </h4>
+                      {tasks?.[columnId]?.map((task, index) => (
+                        <Draggable
+                          key={task.id}
+                          draggableId={task.id}
+                          index={index}
                         >
-                            <h6 className="font-medium text-sm">
-                                Reunião de Gente e Gestão
-                            </h6>
-                            <hr />
-                            <p className="text-xs">
-                                Organizar, marcar, criar temas para reunião.
-                            </p>
-                        </div>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={{
+                                ...provided.draggableProps.style,
+                              }}
+                            >
+                              <TaskColumn
+                                text={task.text}
+                                setIsModalOpen={setIsTaskModalOpen}
+                                handleModal={() => {
+                                  setIsTaskModalOpen(true);
+                                  setSelectedTaskId(index);
+                                }}
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
                     </div>
+                  )}
+                </Droppable>
+              ))}
+            </div>
+          </DragDropContext>
+        </section>
+      </main>
 
-                    <DragDropContext onDragEnd={onDragEnd}>
-                        <div
-                            className="flex flex-grow gap-2 p-0"
-                            style={{ width: "100%" }}
-                        >
-                            {Object.keys(tasks).map((columnId) => (
-                                <Droppable
-                                    key={columnId}
-                                    droppableId={columnId}
-                                >
-                                    {(provided) => (
-                                        <div
-                                            ref={provided.innerRef}
-                                            {...provided.droppableProps}
-                                            className=""
-                                            style={{
-                                                minWidth: 170,
-                                                width: "100%",
-                                            }}
-                                        >
-                                            <h4 className="text-center font-bold text-lg mb-2">
-                                                {columnId === "ToDo"
-                                                    ? "A Fazer"
-                                                    : columnId === "InProgress"
-                                                    ? "Em Andamento"
-                                                    : "Concluído"}
-                                            </h4>
-                                            {tasks?.[columnId]?.map(
-                                                (task, index) => (
-                                                    <Draggable
-                                                        key={task.id}
-                                                        draggableId={task.id}
-                                                        index={index}
-                                                    >
-                                                        {(provided) => (
-                                                            <div
-                                                                ref={
-                                                                    provided.innerRef
-                                                                }
-                                                                {...provided.draggableProps}
-                                                                {...provided.dragHandleProps}
-                                                                className="p-4 bg-gray-100 rounded-lg shadow-md my-2 mx-auto"
-                                                                style={{
-                                                                    height: 130,
-                                                                    minWidth: 150,
-                                                                    width: "80%",
-                                                                }}
-                                                            >
-                                                                <h6 className="font-medium text-sm">
-                                                                    {task.text}
-                                                                </h6>
-                                                            </div>
-                                                        )}
-                                                    </Draggable>
-                                                )
-                                            )}
-                                            {provided.placeholder}
-                                        </div>
-                                    )}
-                                </Droppable>
-                            ))}
-                        </div>
-                    </DragDropContext>
-                </section>
-            </main>
-        </div>
-    );
+      <ModalTaskColumn
+        isModalOpen={isTaskModalOpen}
+        setIsModalOpen={setIsTaskModalOpen}
+        taskId={selectedTaskId}
+        text={""}
+      />
+    </div>
+  );
 };
 
 export default Sprints;

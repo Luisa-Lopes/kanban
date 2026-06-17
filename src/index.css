@@ -3,7 +3,23 @@
 @tailwind utilities;
 
 @layer base {
-    body {
-        @apply font-serif;
-    }
+  body {
+    @apply font-serif;
+  }
+}
+
+.react-calendar__tile--active {
+  background: #2563eb !important;
+  color: white !important;
+}
+
+.react-calendar__tile--range {
+  background: #93c5fd !important;
+  color: black !important;
+}
+
+.react-calendar__tile--rangeStart,
+.react-calendar__tile--rangeEnd {
+  background: #2563eb !important;
+  color: white !important;
 }

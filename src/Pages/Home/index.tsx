@@ -154,8 +154,7 @@ const Home = () => {
             </div>
           </div>
         </section>
-
-        {/* Stats Cards */}
+        +{/* Stats Cards */}
         <section className="px-5 py-8">
           <div className="mx-auto max-w-7xl">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -165,7 +164,6 @@ const Home = () => {
             </div>
           </div>
         </section>
-
         {/* Projetos Recentes */}
         <section className="px-5 py-8">
           <div className="mx-auto max-w-7xl">
@@ -223,7 +221,6 @@ const Home = () => {
             </div>
           </div>
         </section>
-
         {/* Tarefas Recentes */}
         <section className="px-5 py-8">
           <div className="mx-auto max-w-7xl">
