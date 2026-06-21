@@ -53,7 +53,11 @@ const Sidebar = () => {
             title="Projetos"
             Icon={FolderOpenIcon}
           />
-          <SidebarButton link="/" title="Calendário" Icon={CalendarIcon} />
+          <SidebarButton
+            link="/calendar"
+            title="Calendário"
+            Icon={CalendarIcon}
+          />
           <SidebarButton
             link="/"
             title="Documentos"

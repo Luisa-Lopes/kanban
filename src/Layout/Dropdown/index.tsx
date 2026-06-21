@@ -1,8 +1,8 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, ReactNode, useEffect, useRef, useState } from "react";
 
 interface DropdownOption {
   value: string;
-  label: string;
+  label: ReactNode;
   disabled?: boolean;
 }
 
@@ -25,12 +25,31 @@ const Dropdown = ({
   placeholder = "Selecione...",
   className = "",
 }: DropdownProps) => {
-  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    onChange(event.target.value);
-  };
+  const [open, setOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const selectedOption = options.find((option) => option.value === value);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className={className}>
+    <div ref={dropdownRef} className={`relative ${className}`}>
       {label && (
         <label
           htmlFor={name}
@@ -40,32 +59,76 @@ const Dropdown = ({
         </label>
       )}
 
-      <div className="relative">
-        <select
-          id={name}
-          name={name}
-          value={value}
-          onChange={handleChange}
-          className="w-full appearance-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-        >
-          <option value="" disabled>
-            {placeholder}
-          </option>
-          {options.map((option) => (
-            <option
-              key={option.value}
-              value={option.value}
-              disabled={option.disabled}
-            >
-              {option.label}
-            </option>
-          ))}
-        </select>
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="
+          w-full
+          min-h-[48px]
+          px-4
+          py-3
+          rounded-xl
+          border
+          border-slate-300
+          bg-white
+          text-left
+          flex
+          items-center
+          justify-between
+          hover:border-blue-400
+          transition
+        "
+      >
+        <div>
+          {selectedOption?.label || (
+            <span className="text-slate-400">{placeholder}</span>
+          )}
+        </div>
 
-        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+        <span className={`transition-transform ${open ? "rotate-180" : ""}`}>
           ▾
         </span>
-      </div>
+      </button>
+
+      {open && (
+        <div
+          className="
+            absolute
+            z-50
+            mt-2
+            w-full
+            overflow-hidden
+            rounded-xl
+            border
+            border-slate-200
+            bg-white
+            shadow-lg
+          "
+        >
+          {options.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              disabled={option.disabled}
+              onClick={() => {
+                onChange(option.value);
+                setOpen(false);
+              }}
+              className={`
+                w-full
+                px-4
+                py-3
+                text-left
+                hover:bg-slate-100
+                transition
+                ${option.disabled ? "cursor-not-allowed opacity-50" : ""}
+              `}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

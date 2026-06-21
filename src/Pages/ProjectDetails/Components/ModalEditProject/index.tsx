@@ -1,5 +1,6 @@
 import { useFormik } from "formik";
 import { Button, Input, Modal } from "../../../../Layout";
+import { formatDateForInput } from "../../../../utils/DatesFunctions";
 
 interface IModalEditProject {
   isModalOpen: boolean;
@@ -15,12 +16,6 @@ interface IModalEditProject {
     };
   };
 }
-
-const formatDateForInput = (timestamp?: number) => {
-  if (!timestamp) return "";
-
-  return new Date(timestamp).toISOString().split("T")[0];
-};
 
 const ModalEditProject = ({
   isModalOpen,
