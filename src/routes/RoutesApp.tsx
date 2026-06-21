@@ -5,20 +5,32 @@ import { PrivateRoute } from "./PrivateRoutes";
 import Projects from "../Pages/Projects";
 import ProjectsDetails from "../Pages/ProjectDetails";
 import LandingPage from "../Pages/LandingPage";
-import { AuthProvider } from "../contexts/auth";
 import { SidebarProvider } from "../contexts/sidebarProvider";
+import CalendarPage from "../Pages/Calendar";
+import Signup from "../Pages/Signup";
 
 function RoutesApp() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/signin" element={<Signin />} />
+      <Route path="/signup" element={<Signup />} />
       <Route
         path="/home"
         element={
           <PrivateRoute>
             <SidebarProvider>
               <Home />
+            </SidebarProvider>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/calendar"
+        element={
+          <PrivateRoute>
+            <SidebarProvider>
+              <CalendarPage />
             </SidebarProvider>
           </PrivateRoute>
         }

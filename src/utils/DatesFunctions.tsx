@@ -12,3 +12,9 @@ export const TimestampToFormatDate = (timestamp: number): string => {
 
   return new Date(timestamp).toLocaleDateString("pt-BR");
 };
+
+export const formatDateForInput = (timestamp?: number) => {
+  if (!timestamp) return "";
+
+  return new Date(timestamp).toISOString().split("T")[0];
+};

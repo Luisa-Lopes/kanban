@@ -1,152 +1,156 @@
-import React, { useEffect, useState } from "react";
-import { UserCircleIcon } from "@heroicons/react/24/solid";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/userAuth";
+import { useFormik } from "formik";
+import { Button, Input } from "../../Layout";
 
 const Signup = () => {
-    const { signup } = useAuth();
+  const { signup } = useAuth();
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [username, setUsername] = useState<string>("");
-    const [userError, setUserError] = useState<boolean>(false);
-    const [password, setPassword] = useState<string>("");
-    const [passwordError, setPasswordError] = useState<boolean>(false);
+  const formik = useFormik({
+    initialValues: {
+      userEmail: "",
+      userName: "",
+      userSurname: "",
+      password: "",
+      validPassword: "",
+    },
+    validate: (values) => {
+      const errors: {
+        userEmail?: string;
+        userName?: string;
+        userSurname?: string;
+        password?: string;
+        validPassword?: string;
+      } = {};
 
-    const handleSignup = () => {
-        if (!username) {
-            setUserError(true);
-        }
+      if (!values.userEmail) errors.userEmail = "Campo obrigatório!";
+      if (!values.userName) errors.userName = "Campo obrigatório!";
+      if (!values.userSurname) errors.userSurname = "Campo obrigatório!";
+      if (!values.password) errors.password = "Campo obrigatório!";
+      if (!values.validPassword) errors.validPassword = "Campo obrigatório!";
+      else if (values.password != values.validPassword)
+        errors.validPassword = "Senha diferente!";
 
-        if (!password) {
-            setPasswordError(true);
-            return;
-        }
+      return errors;
+    },
+    onSubmit: (values) => {
+      const res = signup(
+        values.userEmail,
+        values.userName,
+        values.userSurname,
+        values.password,
+      );
 
-        setUserError(false);
-        setPasswordError(false);
+      if (res) {
+        return;
+      }
 
-        const res = signup(username, password);
+      navigate("/home");
+    },
+  });
 
-        if (res) {
-            return;
-        }
-        navigate("/");
-    };
+  return (
+    <div className="flex w-screen h-screen bg-sky-400">
+      <form
+        className="m-auto flex flex-col md:flex-row justify-center items-center rounded-md w-4/5 shadow-lg"
+        style={{
+          height: "70%",
+          backgroundColor: "rgba(0, 0, 0, 0.27)",
+          minHeight: "500px",
+          maxWidth: "800px",
+          maxBlockSize: "600px",
+        }}
+      >
+        <section className="flex flex-col h-full w-full items-center justify-center  rounded-md bg-white">
+          <h2 className="text-center font-semibold text-3xl my-2 capitalize">
+            Bem-vindo ao
+          </h2>
+          <h1 className="text-center font-bold text-4xl my-2 capitalize">
+            Gerenciador de Projetos
+          </h1>
+        </section>
 
-    useEffect(() => {
-        if (username) {
-            setUserError(false);
-        }
+        <section className="flex flex-col w-full h-full justify-between p-5">
+          <h1 className="text-center font-bold text-4xl my-2 capitalize">
+            Criar uma conta
+          </h1>
 
-        if (password) {
-            setPasswordError(false);
-            return;
-        }
-    }, [username, password]);
+          <div className="flex flex-col gap-2">
+            <Input
+              label="Nome"
+              type="text"
+              placeholder="Digite o nome"
+              variant="default"
+              size="md"
+              required
+              error={formik.errors.userName}
+              value={formik.values.userName}
+              onChange={formik.handleChange}
+              name="userName"
+            />
 
-    return (
-        <div className="w-screen h-screen bg-cover bg-no-repeat flex ">
-            <form
-                className="m-auto flex flex-col justify-center items-center  rounded-md"
-                style={{
-                    width: "50%",
-                    height: "70%",
-                    backgroundColor: "rgba(0, 0, 0, 0.27)",
-                    minWidth: "400px",
-                    minHeight: "500px",
-                    maxWidth: "500px",
-                    maxBlockSize: "600px",
-                }}
-            >
-                <h1 className="text-center font-bold text-4xl my-2 capitalize">
-                    Cadastrar
-                </h1>
+            <Input
+              label="Sobrenome"
+              type="text"
+              placeholder="Digite o sobrenome"
+              variant="default"
+              size="md"
+              required
+              error={formik.errors.userSurname}
+              value={formik.values.userSurname}
+              onChange={formik.handleChange}
+              name="userSurname"
+            />
 
-                <SignupInput
-                    name={"Username"}
-                    setInput={setUsername}
-                    error={userError}
-                />
-                <SignupInput
-                    name={"Password"}
-                    setInput={setPassword}
-                    error={passwordError}
-                />
+            <Input
+              label="E-mail"
+              type="email"
+              placeholder="Digite o e-mail"
+              variant="default"
+              size="md"
+              required
+              error={formik.errors.userEmail}
+              value={formik.values.userEmail}
+              onChange={formik.handleChange}
+              name="userEmail"
+            />
 
-                <button
-                    type="button"
-                    className="p-2 rounded-md flex gap-2 my-3 bg-sky-600 justify-center"
-                    style={{
-                        width: "300px",
-                    }}
-                    onClick={handleSignup}
-                >
-                    <h3 className="text-center">Entrar</h3>
-                </button>
-            </form>
-        </div>
-    );
+            <Input
+              label="Senha"
+              type="password"
+              placeholder="Digite a senha"
+              variant="default"
+              size="md"
+              required
+              error={formik.errors.password}
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              name="password"
+            />
+
+            <Input
+              label="Senha"
+              type="validPassword"
+              placeholder="Digite a senha"
+              variant="default"
+              size="md"
+              required
+              error={formik.errors.validPassword}
+              value={formik.values.validPassword}
+              onChange={formik.handleChange}
+              name="validPassword"
+            />
+          </div>
+
+          <Button onClick={() => formik.handleSubmit()} className="flex w-full">
+            Entrar
+          </Button>
+        </section>
+      </form>
+    </div>
+  );
 };
 
 export default Signup;
-
-interface ISignupInput {
-    name: string;
-    setInput: React.Dispatch<React.SetStateAction<string>>;
-    error: boolean;
-}
-
-const SignupInput = ({ name, setInput, error }: ISignupInput) => {
-    const [buttonClick, setButtonClick] = useState<boolean>(false);
-
-    const [outlineColor, setOutlineColor] = useState<string>("");
-    const [outlineStyle, setOutlineStyle] = useState<string>("");
-
-    const getOutlineColor = (): string => {
-        if (buttonClick) return "#00000";
-        if (error) return "#FF0000";
-
-        return "";
-    };
-
-    const getOutlineStyle = (): string => {
-        if (buttonClick || error) return "solid";
-
-        return "";
-    };
-
-    useEffect(() => {
-        setOutlineColor(getOutlineColor());
-        setOutlineStyle(getOutlineStyle());
-    }, [buttonClick, error]);
-
-    return (
-        <div
-            className="p-2 rounded-md flex justify-between gap-2 my-3"
-            style={{
-                width: "300px",
-                backgroundColor: "rgba(255, 255, 255, 0.47)",
-                outlineColor: outlineColor,
-                outlineStyle: outlineStyle,
-            }}
-        >
-            <UserCircleIcon className="size-6 text-black" />
-            <input
-                name={name}
-                className="w-full placeholder:text-gray-700"
-                onFocus={() => setButtonClick(true)}
-                onBlur={() => setButtonClick(false)}
-                onChange={(event) => {
-                    setInput(event.target.value);
-                }}
-                placeholder={name}
-                style={{
-                    width: "300px",
-                    backgroundColor: "rgba(255, 255, 255, 0)",
-                    outline: "none",
-                }}
-            />
-        </div>
-    );
-};

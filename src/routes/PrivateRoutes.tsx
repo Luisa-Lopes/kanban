@@ -12,5 +12,5 @@ export function PrivateRoute({ children }: PrivateRouteProps) {
     return <Navigate to={"/"} replace />;
   }
 
-  return token ? <>{children}</> : <Navigate to="/landingpage" replace />;
+  return token ? <>{children}</> : <Navigate to="/" replace />;
 }

@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from "react";
-import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/userAuth";
 import { Button, Input } from "../../Layout";
@@ -90,63 +88,3 @@ const Signin = () => {
 };
 
 export default Signin;
-
-interface ISigninInput {
-  name: string;
-  setInput: React.Dispatch<React.SetStateAction<string>>;
-  error: boolean;
-}
-
-const SigninInput = ({ name, setInput, error }: ISigninInput) => {
-  const [buttonClick, setButtonClick] = useState<boolean>(false);
-
-  const [outlineColor, setOutlineColor] = useState<string>("");
-  const [outlineStyle, setOutlineStyle] = useState<string>("");
-
-  const getOutlineColor = (): string => {
-    if (buttonClick) return "#00000";
-    if (error) return "#FF0000";
-
-    return "";
-  };
-
-  const getOutlineStyle = (): string => {
-    if (buttonClick || error) return "solid";
-
-    return "";
-  };
-
-  useEffect(() => {
-    setOutlineColor(getOutlineColor());
-    setOutlineStyle(getOutlineStyle());
-  }, [buttonClick, error]);
-
-  return (
-    <div
-      className="p-2 rounded-md flex justify-between gap-2 my-3"
-      style={{
-        width: "300px",
-        backgroundColor: "rgba(255, 255, 255, 0.47)",
-        outlineColor: outlineColor,
-        outlineStyle: outlineStyle,
-      }}
-    >
-      <UserCircleIcon className="size-6 text-black" />
-      <input
-        name={name}
-        className="w-full placeholder:text-gray-700"
-        onFocus={() => setButtonClick(true)}
-        onBlur={() => setButtonClick(false)}
-        onChange={(event) => {
-          setInput(event.target.value);
-        }}
-        placeholder={name}
-        style={{
-          width: "300px",
-          backgroundColor: "rgba(255, 255, 255, 0)",
-          outline: "none",
-        }}
-      />
-    </div>
-  );
-};
