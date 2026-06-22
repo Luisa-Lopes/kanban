@@ -1,15 +1,16 @@
 import "react-calendar/dist/Calendar.css";
-import { useSidebar } from "../../contexts/sidebarProvider";
+
 import Sprints from "./Components/Sprints";
-import Sidebar from "../../Layout/SideBar";
-import { Header } from "../../Layout/Header";
 import { IDashboard } from "./types";
-import { TimestampToFormatDate } from "../../utils/DatesFunctions";
-import { Button, Card } from "../../Layout";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import ModalEditProject from "./Components/ModalEditProject";
 import { useState } from "react";
 import ModalAddMember from "./Components/ModalAddMember";
+import { useSidebar } from "@/contexts/sidebarProvider";
+import Sidebar from "@/Layout/SideBar";
+import { Header } from "@/Layout/Header";
+import { Button, Card } from "@/Layout";
+import { TimestampToFormatDate } from "@/utils/DatesFunctions";
 
 const project: IDashboard = {
   id: "proj-001",
