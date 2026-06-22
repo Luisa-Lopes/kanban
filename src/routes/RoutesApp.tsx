@@ -8,6 +8,7 @@ import LandingPage from "../Pages/LandingPage";
 import { SidebarProvider } from "../contexts/sidebarProvider";
 import CalendarPage from "../Pages/Calendar";
 import Signup from "../Pages/Signup";
+import SettingsPage from "../Pages/SettingsPage";
 
 function RoutesApp() {
   return (
@@ -51,6 +52,16 @@ function RoutesApp() {
           <PrivateRoute>
             <SidebarProvider>
               <ProjectsDetails />
+            </SidebarProvider>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <PrivateRoute>
+            <SidebarProvider>
+              <SettingsPage />
             </SidebarProvider>
           </PrivateRoute>
         }
