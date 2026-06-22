@@ -66,7 +66,11 @@ const Sidebar = () => {
         </nav>
 
         <div className="mt-auto border-t border-white/20 pt-4">
-          <SidebarButton link="/" title="Configurações" Icon={Cog8ToothIcon} />
+          <SidebarButton
+            link="/settings"
+            title="Configurações"
+            Icon={Cog8ToothIcon}
+          />
         </div>
       </aside>
     </div>
