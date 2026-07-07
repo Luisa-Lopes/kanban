@@ -46,22 +46,35 @@ const Sidebar = () => {
         </div>
 
         <nav className="mt-8 flex flex-1 flex-col gap-2">
-          <SidebarButton link="/home" title="Home" Icon={HomeIcon} />
-          <SidebarButton link="/" title="Equipe" Icon={UserGroupIcon} />
+          <SidebarButton
+            link="/home"
+            title="Home"
+            Icon={HomeIcon}
+            setOpenSidebar={setOpenSidebar}
+          />
+          <SidebarButton
+            link="/"
+            title="Equipe"
+            Icon={UserGroupIcon}
+            setOpenSidebar={setOpenSidebar}
+          />
           <SidebarButton
             link="/projects"
             title="Projetos"
             Icon={FolderOpenIcon}
+            setOpenSidebar={setOpenSidebar}
           />
           <SidebarButton
             link="/calendar"
             title="Calendário"
             Icon={CalendarIcon}
+            setOpenSidebar={setOpenSidebar}
           />
           <SidebarButton
             link="/"
             title="Documentos"
             Icon={DocumentDuplicateIcon}
+            setOpenSidebar={setOpenSidebar}
           />
         </nav>
 
@@ -70,6 +83,7 @@ const Sidebar = () => {
             link="/settings"
             title="Configurações"
             Icon={Cog8ToothIcon}
+            setOpenSidebar={setOpenSidebar}
           />
         </div>
       </aside>

@@ -6,7 +6,7 @@ type ButtonSize = "sm" | "md" | "lg";
 const variantStyles: Record<ButtonVariant, string> = {
   primary: "bg-sky-600 text-white hover:bg-sky-700",
   secondary: "bg-slate-100 text-slate-900 hover:bg-slate-200",
-  ghost: "bg-transparent text-slate-800 hover:bg-slate-100",
+  ghost: "bg-transparent border text-slate-800 hover:bg-slate-100",
   danger: "bg-red-700 text-white hover:bg-red-700",
 };
 
@@ -39,7 +39,7 @@ const Button = ({
     <button
       type={type}
       disabled={disabled}
-      className={`inline-flex items-center justify-center rounded-2xl font-semibold transition duration-200 ${variantClass} ${sizeClass} ${
+      className={`inline-flex items-center justify-center rounded-md font-semibold transition duration-200 ${variantClass} ${sizeClass} ${
         disabled ? "cursor-not-allowed opacity-60" : "shadow-sm"
       } ${className}`}
       {...props}

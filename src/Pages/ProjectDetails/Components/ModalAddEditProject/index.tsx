@@ -1,12 +1,11 @@
 import { useFormik } from "formik";
 import { Button, Input, Modal } from "../../../../Layout";
 import { formatDateForInput } from "../../../../utils/DatesFunctions";
+import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 
 interface IModalEditProject {
-  isModalOpen: boolean;
   setIsModalOpen: (value: boolean) => void;
-
-  project: {
+  project?: {
     title: string;
     description: string;
     timeline: {
@@ -17,18 +16,17 @@ interface IModalEditProject {
   };
 }
 
-const ModalEditProject = ({
-  isModalOpen,
+const ModalAddEditProject = ({
   setIsModalOpen,
   project,
 }: IModalEditProject) => {
   const formik = useFormik({
     initialValues: {
-      title: project.title || "",
-      description: project.description || "",
-      startDate: formatDateForInput(project.timeline.startDate),
-      expectedEndDate: formatDateForInput(project.timeline.expectedEndDate),
-      endDate: formatDateForInput(project.timeline.endDate),
+      title: project?.title || "",
+      description: project?.description || "",
+      startDate: formatDateForInput(project?.timeline?.startDate),
+      expectedEndDate: formatDateForInput(project?.timeline?.expectedEndDate),
+      endDate: formatDateForInput(project?.timeline?.endDate),
     },
 
     onSubmit: (values) => {
@@ -39,20 +37,28 @@ const ModalEditProject = ({
   });
 
   return (
-    <Modal
-      isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
-      className="flex flex-col w-[800px] max-w-[95vw] p-6"
-    >
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold">Editar Projeto</h2>
+    <section className="flex flex-col justify-center items-center p-6">
+      <form
+        onSubmit={formik.handleSubmit}
+        className="flex flex-col gap-5 max-w-800 w-full bg-white p-6 rounded-lg shadow-md"
+      >
+        <div className="flex items-center gap-3 mb-6">
+          <Button onClick={() => setIsModalOpen(false)}>
+            <ArrowLeftIcon width={24} height={24} className="text-white" />
+            Voltar
+          </Button>
+        </div>
+        <div className="mb-6 flex flex-col text-left">
+          <h2 className="text-xl font-semibold">
+            {project ? "Editar Projeto" : "Adicionar Projeto"}
+          </h2>
 
-        <p className="text-sm text-slate-500 mt-1">
-          Atualize as informações do projeto.
-        </p>
-      </div>
-
-      <form onSubmit={formik.handleSubmit} className="flex flex-col gap-5">
+          <p className="text-sm text-slate-500 mt-1">
+            {project
+              ? "Atualize as informações do projeto."
+              : "Preencha as informações do projeto."}
+          </p>
+        </div>
         <Input
           label="Título"
           type="text"
@@ -107,21 +113,19 @@ const ModalEditProject = ({
         </div>
 
         <div className="flex justify-end gap-3 mt-4">
-          <button
+          <Button
             type="button"
-            className="px-4 py-2 border rounded-md"
+            variant="ghost"
             onClick={() => setIsModalOpen(false)}
           >
             Cancelar
-          </button>
-
-          <Button type="submit" className="px-4 py-2">
-            Salvar Alterações
           </Button>
+
+          <Button type="submit">Salvar Alterações</Button>
         </div>
       </form>
-    </Modal>
+    </section>
   );
 };
 
-export default ModalEditProject;
+export default ModalAddEditProject;

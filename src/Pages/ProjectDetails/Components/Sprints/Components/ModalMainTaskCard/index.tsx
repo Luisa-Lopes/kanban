@@ -5,8 +5,8 @@ import { useFormik } from "formik";
 interface IModalMainTaskCard {
   isModalOpen: boolean;
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
 }
 
 const ModalMainTaskCard = ({
@@ -33,10 +33,14 @@ const ModalMainTaskCard = ({
     <Modal
       isOpen={isModalOpen}
       onClose={() => setIsModalOpen(false)}
-      className="flex flex-col w-[700px] max-w-[90vw] p-6"
+      className="flex flex-col w-[700px] max-w-[70vw] p-6"
     >
       <div className="flex items-center mb-6">
-        <h2 className="text-xl font-semibold">Editar Tarefa Principal</h2>
+        <h2 className="text-xl font-semibold">
+          {isModalOpen
+            ? "Editar Tarefa Principal"
+            : "Adicionar Tarefa Principal"}
+        </h2>
       </div>
 
       <div className="flex flex-col gap-4">

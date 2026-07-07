@@ -1,27 +1,33 @@
 import { useFormik } from "formik";
 import { Button, Input, Modal } from "../../../../../../Layout";
+import { IResponsible } from "@/Pages/ProjectDetails/types";
 
 interface IModalTaskColumn {
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  taskId?: number;
-  text: string;
+  task?: {
+    id: string;
+    title: string;
+    responsible?: IResponsible[];
+    description?: string;
+  };
 }
 
 const ModalTaskColumn = ({
   isModalOpen,
   setIsModalOpen,
-  taskId,
-  text,
+  task,
 }: IModalTaskColumn) => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      text: text || "",
+      id: task?.id || 0,
+      description: task?.description || "",
+      responsible: task?.responsible || [],
+      title: task?.title || "",
     },
     onSubmit: (values) => {
       console.log({
-        id: taskId,
         ...values,
       });
 
@@ -45,15 +51,27 @@ const ModalTaskColumn = ({
         </div>
 
         <Input
-          label="Nome da etapa"
+          label="Título"
           type="text"
-          placeholder="Digite o nome da etapa"
+          placeholder="Digite o título da etapa"
           variant="default"
           required
           name="text"
-          value={formik.values.text}
+          value={formik.values.title}
           onChange={formik.handleChange}
-          error={formik.errors.text}
+          error={formik.errors.title}
+        />
+
+        <Input
+          label="Descrição da etapa"
+          type="text"
+          placeholder="Digite a descrição da etapa"
+          variant="default"
+          required
+          name="text"
+          value={formik.values.description}
+          onChange={formik.handleChange}
+          error={formik.errors.description}
         />
 
         <div className="flex justify-end gap-3">

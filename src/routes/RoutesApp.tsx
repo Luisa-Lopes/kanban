@@ -9,6 +9,7 @@ import { SidebarProvider } from "../contexts/sidebarProvider";
 import CalendarPage from "../Pages/Calendar";
 import Signup from "../Pages/Signup";
 import SettingsPage from "../Pages/SettingsPage";
+import ProjectModal from "@/Pages/Projects/Components/ProjectDetails";
 
 function RoutesApp() {
   return (
@@ -56,6 +57,7 @@ function RoutesApp() {
           </PrivateRoute>
         }
       />
+
       <Route
         path="/settings"
         element={

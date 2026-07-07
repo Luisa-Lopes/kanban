@@ -1,13 +1,19 @@
+import { IResponsible } from "@/Pages/ProjectDetails/types";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import { Dispatch, SetStateAction } from "react";
 
 interface ITaskColumn {
-  text: string;
+  task: {
+    id: string;
+    title: string;
+    responsible?: IResponsible[];
+    description?: string;
+  };
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
   handleModal: () => void;
 }
 
-const TaskColumn = ({ text, handleModal }: ITaskColumn) => {
+const TaskColumn = ({ task, handleModal }: ITaskColumn) => {
   return (
     <>
       <div
@@ -25,7 +31,17 @@ const TaskColumn = ({ text, handleModal }: ITaskColumn) => {
           </button>
         </div>
 
-        <h6 className="font-medium text-sm break-words">{text}</h6>
+        <h6 className="font-medium text-sm break-words">{task.title}</h6>
+
+        <div>
+          {task?.responsible?.map((resp) => {
+            return (
+              <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center font-bold">
+                {resp.name.charAt(0)}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </>
   );

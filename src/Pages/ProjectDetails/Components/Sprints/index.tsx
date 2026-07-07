@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   DragDropContext,
   Draggable,
@@ -30,7 +30,7 @@ const Sprints = ({ sprint }: ISprints) => {
   const [date, setDate] = useState<[Date, Date]>([new Date(), new Date()]);
   const [tasks, setTasks] = useState<ITasks>(sprint.tasks);
 
-  const [selectedTaskId, setSelectedTaskId] = useState<number | undefined>();
+  const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>();
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
 
   const startDate = formatDate("pt", date[0]);
@@ -72,9 +72,23 @@ const Sprints = ({ sprint }: ISprints) => {
     });
   };
 
+  const selectedTask = useMemo(() => {
+    if (selectedTaskId === undefined) {
+      return undefined;
+    }
+
+    const allTasks = [
+      ...sprint?.tasks?.["ToDo"],
+      ...sprint?.tasks?.["InProgress"],
+      ...sprint?.tasks?.["Done"],
+    ];
+
+    return allTasks.find((task) => task.id === selectedTaskId);
+  }, [selectedTaskId, sprint?.tasks]);
+
   return (
     <div
-      className="p-1 rounded-md w-full flex flex-col bg-blue-100 mb-3 shadow-lg"
+      className="p-1 rounded-md w-full flex flex-col bg-sky-100 mb-3 shadow-lg"
       style={{ maxWidth: "100%" }}
     >
       <SprintHeader
@@ -153,11 +167,11 @@ const Sprints = ({ sprint }: ISprints) => {
                               }}
                             >
                               <TaskColumn
-                                text={task.text}
+                                task={task}
                                 setIsModalOpen={setIsTaskModalOpen}
                                 handleModal={() => {
                                   setIsTaskModalOpen(true);
-                                  setSelectedTaskId(index);
+                                  setSelectedTaskId(task.id);
                                 }}
                               />
                             </div>
@@ -177,8 +191,7 @@ const Sprints = ({ sprint }: ISprints) => {
       <ModalTaskColumn
         isModalOpen={isTaskModalOpen}
         setIsModalOpen={setIsTaskModalOpen}
-        taskId={selectedTaskId}
-        text={""}
+        task={selectedTask}
       />
     </div>
   );

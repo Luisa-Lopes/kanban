@@ -1,7 +1,16 @@
+export interface IResponsible {
+  id: string;
+  name: string;
+  role: string;
+  avatar: string;
+}
+
 export interface ITasks {
   [key: string]: {
     id: string;
-    text: string;
+    title: string;
+    responsible?: IResponsible[];
+    description?: string;
   }[];
 }
 

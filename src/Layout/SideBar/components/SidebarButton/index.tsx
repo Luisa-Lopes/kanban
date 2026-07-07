@@ -6,6 +6,7 @@ interface ISideBarButton {
   Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   active?: boolean;
   className?: string;
+  setOpenSidebar: (open: boolean) => void;
 }
 
 const SidebarButton = ({
@@ -14,9 +15,13 @@ const SidebarButton = ({
   Icon,
   active = false,
   className = "",
+  setOpenSidebar,
 }: ISideBarButton) => {
   return (
     <Link
+      onClick={() => {
+        setOpenSidebar(false);
+      }}
       to={link}
       className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition duration-200 ${
         active ? "bg-white/20 shadow-sm" : "hover:bg-white/10"

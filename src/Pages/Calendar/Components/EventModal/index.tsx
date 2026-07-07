@@ -47,7 +47,7 @@ const EventModal = ({
         setSelectedEvent(undefined);
         formik.resetForm();
       }}
-      className="flex  flex-col h-3/4 w-2/3"
+      className="flex flex-col  w-2/3"
     >
       <div className="flex flex-col items-center justify-center">
         <h1>Evento</h1>

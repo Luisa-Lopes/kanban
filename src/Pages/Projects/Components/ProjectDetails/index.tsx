@@ -1,13 +1,13 @@
 import { useFormik } from "formik";
-import { Button, Input, Modal } from "../../../../Layout";
+import { Button, Input } from "../../../../Layout";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-interface IModalProject {
+interface IProjectModal {
   isModalOpen: boolean;
   setIsModalOpen: (isModalOpen: boolean) => void;
 }
 
-const ModalProject = ({ isModalOpen, setIsModalOpen }: IModalProject) => {
+const ProjectDetails = ({ isModalOpen, setIsModalOpen }: IProjectModal) => {
   const formik = useFormik({
     initialValues: {
       projectName: "",
@@ -23,11 +23,7 @@ const ModalProject = ({ isModalOpen, setIsModalOpen }: IModalProject) => {
   });
 
   return (
-    <Modal
-      isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
-      className="flex  flex-col h-3/4 w-2/3"
-    >
+    <section className="flex  flex-col h-3/4 w-2/3">
       <div className="flex flex-col items-center justify-center">
         <h1>Criar Novo Projeto</h1>
         <form
@@ -125,8 +121,8 @@ const ModalProject = ({ isModalOpen, setIsModalOpen }: IModalProject) => {
           </Button>
         </form>
       </div>
-    </Modal>
+    </section>
   );
 };
 
-export default ModalProject;
+export default ProjectDetails;
