@@ -10,6 +10,7 @@ import CalendarPage from "../Pages/Calendar";
 import Signup from "../Pages/Signup";
 import SettingsPage from "../Pages/SettingsPage";
 import ProjectModal from "@/Pages/Projects/Components/ProjectDetails";
+import Team from "@/Pages/Team";
 
 function RoutesApp() {
   return (
@@ -33,6 +34,16 @@ function RoutesApp() {
           <PrivateRoute>
             <SidebarProvider>
               <CalendarPage />
+            </SidebarProvider>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/team"
+        element={
+          <PrivateRoute>
+            <SidebarProvider>
+              <Team />
             </SidebarProvider>
           </PrivateRoute>
         }

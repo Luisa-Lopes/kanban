@@ -53,7 +53,7 @@ const Sidebar = () => {
             setOpenSidebar={setOpenSidebar}
           />
           <SidebarButton
-            link="/"
+            link="/team"
             title="Equipe"
             Icon={UserGroupIcon}
             setOpenSidebar={setOpenSidebar}
