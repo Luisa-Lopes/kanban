@@ -13,6 +13,8 @@ import { Button, Card } from "@/Layout";
 import { TimestampToFormatDate } from "@/utils/DatesFunctions";
 import ModalAddEditProject from "./Components/ModalAddEditProject";
 import ModalMainTaskCard from "./Components/Sprints/Components/ModalMainTaskCard";
+import { useGetProjects } from "../Projects/hooks/useGetProjects";
+import { useGetProject } from "../Projects/hooks/useGetProject";
 
 const project: IDashboard = {
   id: "proj-001",
@@ -282,6 +284,10 @@ const project: IDashboard = {
 
 const ProjectsDetails = () => {
   const { openSidebar } = useSidebar();
+
+  const { data: getProject } = useGetProject(6);
+
+  console.log(getProject);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isSprintModalOpen, setIsSprintModalOpen] = useState<boolean>(false);

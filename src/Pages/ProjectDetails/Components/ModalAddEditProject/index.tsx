@@ -1,16 +1,21 @@
 import { useFormik } from "formik";
 import { Button, Input, Modal } from "../../../../Layout";
-import { formatDateForInput } from "../../../../utils/DatesFunctions";
+import {
+  DateToTimestamp,
+  formatDateForInput,
+} from "../../../../utils/DatesFunctions";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
+import { IProjects } from "@/Interfaces/Projects";
+import { createProjects } from "@/services/projects";
 
 interface IModalEditProject {
   setIsModalOpen: (value: boolean) => void;
   project?: {
-    title: string;
+    name: string;
     description: string;
     timeline: {
       startDate: number;
-      expectedEndDate: number;
+      estimatedDate: number;
       endDate: number;
     };
   };
@@ -22,17 +27,29 @@ const ModalAddEditProject = ({
 }: IModalEditProject) => {
   const formik = useFormik({
     initialValues: {
-      title: project?.title || "",
+      name: project?.name || "",
       description: project?.description || "",
       startDate: formatDateForInput(project?.timeline?.startDate),
-      expectedEndDate: formatDateForInput(project?.timeline?.expectedEndDate),
+      estimatedDate: formatDateForInput(project?.timeline?.estimatedDate),
       endDate: formatDateForInput(project?.timeline?.endDate),
     },
 
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      const newProject: IProjects = {
+        name: values.name,
+        description: values.description,
+        startDate: new Date(values.startDate).toISOString(),
+        estimatedDate: new Date(values.estimatedDate).toISOString(),
+        endDate: new Date(values.endDate).toISOString(),
+      };
 
-      setIsModalOpen(false);
+      try {
+        await createProjects(newProject);
+
+        setIsModalOpen(false);
+      } catch (e) {
+        console.error(e);
+      }
     },
   });
 
@@ -62,11 +79,11 @@ const ModalAddEditProject = ({
         <Input
           label="Título"
           type="text"
-          name="title"
+          name="name"
           required
-          value={formik.values.title}
+          value={formik.values.name}
           onChange={formik.handleChange}
-          error={formik.errors.title}
+          error={formik.errors.name}
           placeholder="Digite o título do projeto"
         />
 
@@ -96,10 +113,10 @@ const ModalAddEditProject = ({
           <Input
             label="Previsão de Entrega"
             type="date"
-            name="expectedEndDate"
-            value={formik.values.expectedEndDate}
+            name="estimatedDate"
+            value={formik.values.estimatedDate}
             onChange={formik.handleChange}
-            error={formik.errors.expectedEndDate}
+            error={formik.errors.estimatedDate}
           />
 
           <Input

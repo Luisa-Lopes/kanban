@@ -21,14 +21,17 @@ const Signin = () => {
 
       return errors;
     },
-    onSubmit: (values) => {
-      const res = signin(values.userName, values.password);
+    onSubmit: async (values) => {
+      try {
+        await signin(values.userName, values.password);
 
-      if (res) {
-        return;
+        navigate("/home");
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Erro ao realizar login.";
+
+        console.error(message);
       }
-
-      navigate("/home");
     },
   });
 

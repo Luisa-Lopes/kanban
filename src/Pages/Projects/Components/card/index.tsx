@@ -1,8 +1,9 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import { IDashboardResume } from "../../types";
+import { IProjects } from "@/Interfaces/Projects";
+import pastaImagem from "../../../../assets/pasta.png";
+
 interface ICard {
-  project: IDashboardResume;
+  project: IProjects;
 }
 
 const statusColors: Record<string, string> = {
@@ -39,8 +40,8 @@ const Card = ({ project }: ICard) => {
     >
       <div className="h-40 w-full overflow-hidden">
         <img
-          src={project.image}
-          alt={project.title}
+          src={pastaImagem}
+          alt={"Projeto de exemplo"}
           className="
               w-full
               h-full
@@ -55,7 +56,7 @@ const Card = ({ project }: ICard) => {
       <div className="p-4 flex flex-col gap-3 flex-grow">
         <div className="flex justify-between items-start gap-2">
           <h2 className="font-semibold text-lg line-clamp-2">
-            {project.title}
+            {project?.name}
           </h2>
 
           <span
@@ -65,20 +66,20 @@ const Card = ({ project }: ICard) => {
                 py-1
                 rounded-full
                 whitespace-nowrap
-                ${statusColors[project.status] ?? "bg-slate-100 text-slate-700"}
+                ${statusColors?.[project?.status] ?? "bg-slate-100 text-slate-700"}
               `}
           >
-            {project.status}
+            {project?.status}
           </span>
         </div>
 
         <p className="text-sm text-slate-600 line-clamp-2">
-          {project.description}
+          {project?.description}
         </p>
 
         <div className="mt-auto pt-2 border-t">
           <p className="text-xs text-slate-500">
-            Criado em {new Date(project.createdAt).toLocaleDateString("pt-BR")}
+            Criado em {new Date(project?.endDate).toLocaleDateString("pt-BR")}
           </p>
         </div>
       </div>

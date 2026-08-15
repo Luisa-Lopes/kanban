@@ -1,50 +1,20 @@
-import React, { useState } from "react";
-import { useSidebar } from "../../contexts/sidebarProvider";
+import { useState } from "react";
 import pastaImagem from "../../assets/pasta.png";
 import Card from "./Components/card";
-import { Button, Modal } from "../../Layout";
-import ModalProject from "./Components/ProjectDetails";
+import { Button } from "../../Layout";
 import Sidebar from "../../Layout/SideBar";
 import { Header } from "../../Layout/Header";
 import { IDashboardResume } from "./types";
-
-import ProjectDetails from "./Components/ProjectDetails";
 import ModalAddEditProject from "../ProjectDetails/Components/ModalAddEditProject";
+import useAuth from "@/hooks/userAuth";
+import { useGetProjects } from "./hooks/useGetProjects";
 
 const Projects = () => {
+  const { user } = useAuth();
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const projects: IDashboardResume[] = [
-    {
-      id: "20",
-      title: "Sistema de Gestão de Projetos",
-      description:
-        "Plataforma web para gerenciamento de projetos, tarefas, equipes e sprints da empresa.",
-
-      createdAt: 1750086000000,
-      status: "Em andamento",
-      image: pastaImagem,
-    },
-    {
-      id: "30",
-      title: "Sistema de Gestão de Projetos",
-      description:
-        "Plataforma web para gerenciamento de projetos, tarefas, equipes e sprints da empresa.",
-      createdAt: 1750086000000,
-      status: "Em andamento",
-      image: pastaImagem,
-    },
-    {
-      id: "40",
-      title: "Sistema de Gestão de Projetos",
-      description:
-        "Plataforma web para gerenciamento de projetos, tarefas, equipes e sprints da empresa.",
-
-      createdAt: 1750086000000,
-      status: "Em andamento",
-      image: pastaImagem,
-    },
-  ];
+  const { data: getProjects } = useGetProjects();
 
   return (
     <div className="relative flex flex-col w-screen">
@@ -66,7 +36,7 @@ const Projects = () => {
               gridTemplateRows: "repeat(3, 310px)",
             }}
           >
-            {projects?.map((project) => (
+            {getProjects?.map((project) => (
               <Card project={project} />
             ))}
           </section>

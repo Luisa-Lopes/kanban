@@ -1,20 +1,22 @@
+import { IRegisterResponse } from "@/Interfaces/Auth";
+import { login, register, validateToken } from "@/services/Auth";
 import { createContext, useState, useEffect, ReactNode } from "react";
 
 interface User {
   email: string;
-  password: string;
+  token: string;
 }
 
 interface AuthContextType {
   user: User | null;
   signed: boolean;
-  signin: (email: string, password: string) => string | void;
+  signin: (email: string, password: string) => Promise<string | void>;
   signup: (
     email: string,
     password: string,
-    name: string,
-    surname: string,
-  ) => string | void;
+    firstName: string,
+    lastName: string,
+  ) => Promise<IRegisterResponse>;
   signout: () => void;
 }
 
@@ -25,8 +27,8 @@ interface AuthProviderProps {
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   signed: false,
-  signin: () => {},
-  signup: () => {},
+  signin: async () => undefined,
+  signup: async () => ({}) as IRegisterResponse,
   signout: () => {},
 });
 
@@ -34,57 +36,52 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const userToken = localStorage.getItem("user_token");
-    const usersStorage = localStorage.getItem("users_bd");
+    const loadUser = async () => {
+      const token = localStorage.getItem("user_token");
 
-    if (userToken && usersStorage) {
-      const parsedToken = JSON.parse(userToken);
-      const parsedUsers: User[] = JSON.parse(usersStorage);
+      if (!token) return;
 
-      const hasUser = parsedUsers?.find((u) => u.email === parsedToken.email);
+      try {
+        const user = await validateToken();
 
-      if (hasUser) setUser(hasUser);
-    }
+        setUser({
+          email: user.email,
+          token,
+        });
+      } catch {
+        localStorage.removeItem("user_token");
+      }
+    };
+
+    loadUser();
   }, []);
 
-  const signin = (email: string, password: string): string | void => {
-    const usersStorage = JSON.parse(
-      localStorage.getItem("users_bd") || "[]",
-    ) as User[];
+  const signin = async (email: string, password: string): Promise<void> => {
+    const response = await login({
+      email,
+      password,
+    });
 
-    const hasUser = usersStorage.find((user) => user.email === email);
+    localStorage.setItem("user_token", response.dados);
 
-    if (hasUser) {
-      if (hasUser.password === password) {
-        const token = Math.random().toString(36).substring(2);
-        localStorage.setItem("user_token", JSON.stringify({ email, token }));
-        setUser({ email, password });
-        return;
-      } else {
-        return "E-mail ou senha incorretos";
-      }
-    } else {
-      return "Usuário não cadastrado";
-    }
+    setUser({
+      email,
+      token: response.dados,
+    });
   };
 
-  const signup = (
+  const signup = async (
     email: string,
     password: string,
-    name: string,
-    surname: string,
-  ): string | void => {
-    const usersStorage = JSON.parse(
-      localStorage.getItem("users_bd") || "[]",
-    ) as User[];
-
-    if (usersStorage.some((user) => user.email === email)) {
-      return "Já tem uma conta com esse E-mail";
-    }
-
-    const newUser = [...usersStorage, { email, password }];
-
-    localStorage.setItem("users_bd", JSON.stringify(newUser));
+    firstName: string,
+    lastName: string,
+  ): Promise<IRegisterResponse> => {
+    return await register({
+      email,
+      password,
+      firstName,
+      lastName,
+    });
   };
 
   const signout = () => {
