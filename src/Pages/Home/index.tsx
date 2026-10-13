@@ -1,71 +1,22 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+﻿import { useNavigate } from "react-router-dom";
 import { Card, Button } from "../../Layout";
-import work from "../../assets/work.jpg";
-import group from "../../assets/group.jpg";
-import {
-  CheckCircleIcon,
-  ClockIcon,
-  FolderIcon,
-  UserGroupIcon,
-} from "@heroicons/react/24/outline";
+import { ClockIcon, FolderIcon } from "@heroicons/react/24/outline";
 import Sidebar from "../../Layout/SideBar";
 import { Header } from "../../Layout/Header";
 import StateCards from "./Components/StateCards";
 import { useGetProjects } from "../Projects/hooks/useGetProjects";
-import { ProjectStatus } from "@/Interfaces/Projects";
+import { ProjectStatus, TaskStatus } from "@/Interfaces/Projects";
+import { IProjectUserTask } from "@/Interfaces/task";
+import { useGetUserTasks } from "../Calendar/hooks/useGetUserTasks";
 
-interface Project {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  progress: number;
-  team: number;
-}
-
-interface Task {
-  id: string;
-  title: string;
-  project: string;
-  status: "todo" | "in-progress" | "done";
-  dueDate: string;
-  priority: "low" | "medium" | "high";
-}
+type TaskPriority = "low" | "medium" | "high";
 
 const Home = () => {
   const navigate = useNavigate();
 
   const { data: getProjects } = useGetProjects();
 
-  console.log(getProjects, "getProjects");
-
-  const [tasks] = useState<Task[]>([
-    {
-      id: "1",
-      title: "Implementar autenticação OAuth",
-      project: "Gestão de Projetos",
-      status: "in-progress",
-      dueDate: "2026-06-15",
-      priority: "high",
-    },
-    {
-      id: "2",
-      title: "Design da interface do dashboard",
-      project: "Aplicativo Mobile",
-      status: "done",
-      dueDate: "2026-06-10",
-      priority: "medium",
-    },
-    {
-      id: "3",
-      title: "Testar responsividade",
-      project: "Redesign Website",
-      status: "todo",
-      dueDate: "2026-06-20",
-      priority: "low",
-    },
-  ]);
+  const { data: getUserTasks } = useGetUserTasks();
 
   const stats = [
     {
@@ -77,36 +28,47 @@ const Home = () => {
     {
       icon: ClockIcon,
       label: "Tarefas Pendentes",
-      value: 12,
+      value:
+        getUserTasks?.filter((task) => task.status !== TaskStatus.Done)
+          .length ?? 0,
       color: "bg-orange-100 text-orange-600",
     },
   ];
 
-  const getStatusLabel = (status: Task["status"]) => {
-    const statusMap = {
-      todo: "A Fazer",
-      "in-progress": "Em Andamento",
-      done: "Concluído",
+  const getStatusLabel = (status: TaskStatus): string => {
+    const statusMap: Record<TaskStatus, string> = {
+      [TaskStatus.Todo]: "A Fazer",
+      [TaskStatus.InProgress]: "Em Andamento",
+      [TaskStatus.Review]: "Em Revisão",
+      [TaskStatus.Done]: "Concluída",
     };
-    return statusMap[status];
+    return statusMap[status] ?? "Status desconhecido";
   };
 
-  const getStatusColor = (status: Task["status"]) => {
-    const colorMap = {
-      todo: "bg-slate-100 text-slate-700",
-      "in-progress": "bg-blue-100 text-blue-700",
-      done: "bg-green-100 text-green-700",
+  const getStatusColor = (status: TaskStatus): string => {
+    const colorMap: Record<TaskStatus, string> = {
+      [TaskStatus.Todo]: "bg-slate-100 text-slate-700",
+      [TaskStatus.InProgress]: "bg-blue-100 text-blue-700",
+      [TaskStatus.Review]: "bg-amber-100 text-amber-700",
+      [TaskStatus.Done]: "bg-green-100 text-green-700",
     };
-    return colorMap[status];
+    return colorMap[status] ?? "bg-slate-100 text-slate-700";
   };
 
-  const getPriorityColor = (priority: Task["priority"]) => {
-    const colorMap = {
+  const getPriorityColor = (priority: TaskPriority): string => {
+    const colorMap: Record<TaskPriority, string> = {
       low: "text-slate-500",
       medium: "text-orange-500",
       high: "text-red-500",
     };
-    return colorMap[priority];
+    return colorMap[priority] ?? "text-slate-500";
+  };
+
+  const formatTaskEndDate = (endDate: IProjectUserTask["endDate"]): string => {
+    const date = new Date(endDate);
+    return Number.isNaN(date.getTime())
+      ? "Sem data"
+      : date.toLocaleDateString("pt-BR");
   };
 
   return (
@@ -128,7 +90,7 @@ const Home = () => {
             </div>
           </div>
         </section>
-        +{/* Stats Cards */}
+        {/* Stats Cards */}
         <section className="px-5 py-8">
           <div className="mx-auto max-w-7xl">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -208,15 +170,19 @@ const Home = () => {
             </div>
 
             <div className="space-y-3 rounded-2xl bg-white p-5 shadow-sm">
-              {tasks.length > 0 ? (
-                tasks.map((task) => (
+              {getUserTasks?.length > 0 ? (
+                getUserTasks?.map((task) => (
                   <div
                     key={task.id}
                     className="flex flex-col items-start justify-between gap-3 border-b border-slate-100 px-0 py-4 last:border-0 sm:flex-row sm:items-center"
                   >
                     <div className="flex-1 space-y-1">
-                      <p className="font-medium text-slate-900">{task.title}</p>
-                      <p className="text-sm text-slate-500">{task.project}</p>
+                      <p className="font-medium text-slate-900">
+                        {task?.title || ""}
+                      </p>
+                      <p className="text-sm text-slate-500">
+                        {task?.projectName || ""}
+                      </p>
                     </div>
 
                     <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
@@ -226,16 +192,19 @@ const Home = () => {
                         {getStatusLabel(task.status)}
                       </span>
 
-                      <span
-                        className={`text-sm font-semibold ${getPriorityColor(task.priority)}`}
-                      >
-                        {"●"}{" "}
-                        {task.priority.charAt(0).toUpperCase() +
-                          task.priority.slice(1)}
-                      </span>
+                      {task.priority && (
+                        <span
+                          className={`text-sm font-semibold ${getPriorityColor(
+                            task.priority,
+                          )}`}
+                        >
+                          {task.priority.charAt(0).toUpperCase() +
+                            task.priority.slice(1)}
+                        </span>
+                      )}
 
                       <span className="ml-auto text-xs text-slate-500">
-                        {new Date(task.dueDate).toLocaleDateString("pt-BR")}
+                        {formatTaskEndDate(task.endDate)}
                       </span>
                     </div>
                   </div>

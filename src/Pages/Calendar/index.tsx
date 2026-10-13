@@ -1,5 +1,5 @@
-import { format, getDay, parse, startOfWeek } from "date-fns";
-import { useState } from "react";
+﻿import { format, getDay, parse, startOfWeek } from "date-fns";
+import { useEffect, useState } from "react";
 import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -7,6 +7,7 @@ import { ptBR } from "date-fns/locale";
 import Sidebar from "../../Layout/SideBar";
 import { Header } from "../../Layout/Header";
 import EventModal from "./Components/EventModal";
+import { useGetUserTasks } from "./hooks/useGetUserTasks";
 
 const locales = {
   "pt-BR": ptBR,
@@ -20,6 +21,22 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
+const calendarMessages = {
+  allDay: "Dia inteiro",
+  previous: "Anterior",
+  next: "Próximo",
+  today: "Hoje",
+  month: "Mês",
+  week: "Semana",
+  day: "Dia",
+  agenda: "Agenda",
+  date: "Data",
+  time: "Horário",
+  event: "Tarefa",
+  noEventsInRange: "Não há tarefas neste período.",
+  showMore: (total: number) => `+ ${total} mais`,
+};
+
 export interface ICalendarEvent extends Event {
   id: string;
   title: string;
@@ -29,43 +46,57 @@ export interface ICalendarEvent extends Event {
   type: "task" | "meeting" | "personal";
 }
 
-const initialEvents: ICalendarEvent[] = [
-  {
-    id: "1",
-    title: "Entrega Sprint 1",
-    description: "Finalizar dashboard principal",
-    start: new Date(2026, 5, 17, 9, 0),
-    end: new Date(2026, 5, 17, 10, 0),
-    type: "task",
-  },
-
-  {
-    id: "2",
-    title: "Reunião Marketing",
-    description: "Planejamento de campanhas",
-    start: new Date(2026, 5, 18, 14, 0),
-    end: new Date(2026, 5, 18, 15, 0),
-    type: "meeting",
-  },
-
-  {
-    id: "3",
-    title: "Academia",
-    description: "Treino de pernas",
-    start: new Date(2026, 5, 19, 19, 0),
-    end: new Date(2026, 5, 19, 20, 0),
-    type: "personal",
-  },
-];
-
 const CalendarPage = () => {
-  const [events, setEvents] = useState<ICalendarEvent[]>(initialEvents);
+  const { data: userTask } = useGetUserTasks();
+
+  const [events, setEvents] = useState<ICalendarEvent[]>([]);
   const [isOpenEvent, setIsOpenEvent] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<
     ICalendarEvent | undefined
   >();
 
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  useEffect(() => {
+    const toValidDate = (value?: string) => {
+      if (!value) return undefined;
+      const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+      if (dateOnly) {
+        return new Date(
+          Number(dateOnly[1]),
+          Number(dateOnly[2]) - 1,
+          Number(dateOnly[3]),
+        );
+      }
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? undefined : date;
+    };
+
+    setEvents(
+      (userTask ?? []).flatMap((task) => {
+        const datedTask = task as typeof task & {
+          startDate?: string;
+          dueDate?: string;
+          endDate?: string;
+        };
+        const start = toValidDate(
+          datedTask.startDate ?? datedTask.dueDate ?? datedTask.endDate,
+        );
+        if (!start) return [];
+
+        const end = toValidDate(datedTask.endDate) ?? start;
+        return [
+          {
+            id: String(task.id),
+            title: task.title,
+            description: task.description,
+            start,
+            end: end < start ? start : end,
+            allDay: true,
+            type: "task" as const,
+          },
+        ];
+      }),
+    );
+  }, [userTask]);
 
   const eventStyleGetter = (event: ICalendarEvent) => {
     const styles = {
@@ -92,7 +123,7 @@ const CalendarPage = () => {
     };
   };
 
-  const handleSelectSlot = ({ start }: { start: Date }) => {
+  const handleSelectSlot = () => {
     setIsOpenEvent(true);
     setSelectedEvent(undefined);
   };
@@ -111,7 +142,7 @@ const CalendarPage = () => {
           <h1 className="text-3xl font-bold">Calendário</h1>
 
           <p className="text-slate-500">
-            Visualize tarefas, reuniões e eventos pessoais.
+            Visualize suas tarefas no calendário.
           </p>
         </div>
 
@@ -129,10 +160,10 @@ const CalendarPage = () => {
               height: 800,
             }}
             culture="pt-BR"
+            messages={calendarMessages}
             eventPropGetter={eventStyleGetter}
             onSelectSlot={handleSelectSlot}
             onSelectEvent={handleSelectEvent}
-            onNavigate={(date) => setSelectedDate(date)}
           />
         </div>
 

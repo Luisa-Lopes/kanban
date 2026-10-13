@@ -1,4 +1,5 @@
 import { IResponse } from "./Response";
+import { IProjectTask } from "./task";
 
 export interface IProjects {
   id?: number;
@@ -43,15 +44,6 @@ export interface IProjectMember {
   user: IUserResponse;
   joinedAt: string;
   role: ProjectRole;
-}
-
-export interface IProjectTask {
-  id: number;
-  projectSprintId: number;
-  title: string;
-  description: string;
-  status: TaskStatus;
-  assigneeId: string;
 }
 
 export interface ISprint {

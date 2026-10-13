@@ -1,6 +1,11 @@
 import { TaskStatus } from "@/Interfaces/Projects";
-import { IProjectTask } from "@/Interfaces/Projects";
-import { postRequest, putRequest } from "./api";
+
+import { getRequest, postRequest, putRequest } from "./api";
+import {
+  IProjectTask,
+  IProjectTaskResponse,
+  IProjectUserTaskResponse,
+} from "@/Interfaces/task";
 
 export interface ICreateTask {
   id?: number;
@@ -32,5 +37,10 @@ export const updateTask = async (
     data,
   );
 
+  return response.data;
+};
+
+export const getUserTasks = async (): Promise<IProjectUserTaskResponse> => {
+  const response = await getRequest<IProjectUserTaskResponse>(`/tasks/user`);
   return response.data;
 };
