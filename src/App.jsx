@@ -3,7 +3,7 @@ import RoutesApp from "./routes/RoutesApp";
 
 function App() {
   return (
-    <section className="w-full min-h-screen h-auto flex ">
+    <section className="w-full min-h-screen flex">
       <RoutesApp></RoutesApp>
     </section>
   );

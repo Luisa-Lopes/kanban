@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/userAuth";
 import { useFormik } from "formik";
 import { Button, Input } from "../../Layout";
@@ -145,7 +145,12 @@ const Signup = () => {
           <p className="text-center text-gray-500 mt-6">
             Já possui uma conta?{" "}
             <span className="text-sky-600 font-semibold cursor-pointer hover:underline">
-              Entrar
+              <Link
+                to="/signin"
+                className="text-sky-600 font-semibold hover:underline"
+              >
+                Entrar
+              </Link>
             </span>
           </p>
         </section>

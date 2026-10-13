@@ -1,4 +1,6 @@
-export interface IResponsible {
+import { TaskStatus } from "@/Interfaces/Projects";
+
+export interface IAssignee {
   id: string;
   name: string;
   role: string;
@@ -6,12 +8,11 @@ export interface IResponsible {
 }
 
 export interface ITasks {
-  [key: string]: {
-    id: string;
-    title: string;
-    responsible?: IResponsible[];
-    description?: string;
-  }[];
+  id: string;
+  title: string;
+  Assignee?: IAssignee;
+  description?: string;
+  status: TaskStatus;
 }
 
 export interface ISprints {

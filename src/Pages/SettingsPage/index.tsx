@@ -105,7 +105,7 @@ const SettingsPage = () => {
     useState<SettingsSection>("profile");
 
   return (
-    <div className="relative flex flex-col w-screen">
+    <div className="relative flex w-full flex-col">
       <Sidebar />
       <Header />
 

@@ -1,24 +1,13 @@
 import { useFormik } from "formik";
-import { Button, Input, Modal } from "../../../../Layout";
-import {
-  DateToTimestamp,
-  formatDateForInput,
-} from "../../../../utils/DatesFunctions";
+import { Button, Input, Modal } from "@/Layout";
+import { formatStringDateForInput } from "@/utils/DatesFunctions";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
-import { IProjects } from "@/Interfaces/Projects";
-import { createProjects } from "@/services/projects";
+import { IProjects, IProjectsDetailedResponse } from "@/Interfaces/Projects";
+import { createProjects, updateProject } from "@/services/projects";
 
 interface IModalEditProject {
   setIsModalOpen: (value: boolean) => void;
-  project?: {
-    name: string;
-    description: string;
-    timeline: {
-      startDate: number;
-      estimatedDate: number;
-      endDate: number;
-    };
-  };
+  project?: IProjectsDetailedResponse["dados"];
 }
 
 const ModalAddEditProject = ({
@@ -29,13 +18,14 @@ const ModalAddEditProject = ({
     initialValues: {
       name: project?.name || "",
       description: project?.description || "",
-      startDate: formatDateForInput(project?.timeline?.startDate),
-      estimatedDate: formatDateForInput(project?.timeline?.estimatedDate),
-      endDate: formatDateForInput(project?.timeline?.endDate),
+      startDate: formatStringDateForInput(project?.startDate),
+      estimatedDate: formatStringDateForInput(project?.estimatedDate),
+      endDate: formatStringDateForInput(project?.endDate),
     },
 
     onSubmit: async (values) => {
       const newProject: IProjects = {
+        id: project?.id || 0,
         name: values.name,
         description: values.description,
         startDate: new Date(values.startDate).toISOString(),
@@ -44,7 +34,11 @@ const ModalAddEditProject = ({
       };
 
       try {
-        await createProjects(newProject);
+        if (project?.id) {
+          await updateProject(newProject);
+        } else {
+          await createProjects(newProject);
+        }
 
         setIsModalOpen(false);
       } catch (e) {

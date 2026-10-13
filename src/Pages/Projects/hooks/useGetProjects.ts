@@ -3,28 +3,28 @@ import { getProjects } from "@/services/projects";
 import useSWR, { KeyedMutator } from "swr";
 
 export function useGetProjects(): {
-  data: IProjectsResponse[];
+  data: IProjectsResponse["dados"] | undefined;
   error: any;
   isLoading: boolean;
   mutate: KeyedMutator<any>;
 } {
   const fetcherKey = "get-projects";
 
-  const fetcher = async (): Promise<IProjectsResponse[]> => {
+  const fetcher = async (): Promise<IProjectsResponse> => {
     return await getProjects();
   };
 
-  const { data, error, isLoading, mutate } = useSWR<IProjectsResponse[]>(
+  const { data, error, isLoading, mutate } = useSWR<IProjectsResponse>(
     fetcherKey,
     fetcher,
     {
-      refreshInterval: 30000,
-      dedupingInterval: 60000,
+      refreshInterval: 5000,
+      dedupingInterval: 10000,
     },
   );
 
   return {
-    data: data ?? [],
+    data: data?.dados ?? undefined,
     error,
     isLoading,
     mutate,

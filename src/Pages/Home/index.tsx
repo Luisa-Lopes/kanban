@@ -12,6 +12,8 @@ import {
 import Sidebar from "../../Layout/SideBar";
 import { Header } from "../../Layout/Header";
 import StateCards from "./Components/StateCards";
+import { useGetProjects } from "../Projects/hooks/useGetProjects";
+import { ProjectStatus } from "@/Interfaces/Projects";
 
 interface Project {
   id: string;
@@ -33,32 +35,10 @@ interface Task {
 
 const Home = () => {
   const navigate = useNavigate();
-  const [projects] = useState<Project[]>([
-    {
-      id: "1",
-      name: "Gestão de Projetos",
-      description: "Sistema de gerenciamento de projetos com Kanban",
-      image: work,
-      progress: 65,
-      team: 5,
-    },
-    {
-      id: "2",
-      name: "Aplicativo Mobile",
-      description: "Aplicativo nativo para iOS e Android",
-      image: group,
-      progress: 40,
-      team: 8,
-    },
-    {
-      id: "3",
-      name: "Redesign Website",
-      description: "Modernizar visual do website corporativo",
-      image: work,
-      progress: 80,
-      team: 3,
-    },
-  ]);
+
+  const { data: getProjects } = useGetProjects();
+
+  console.log(getProjects, "getProjects");
 
   const [tasks] = useState<Task[]>([
     {
@@ -91,14 +71,8 @@ const Home = () => {
     {
       icon: FolderIcon,
       label: "Projetos Ativos",
-      value: projects.length,
+      value: getProjects?.length,
       color: "bg-blue-100 text-blue-600",
-    },
-    {
-      icon: UserGroupIcon,
-      label: "Membros da Equipe",
-      value: 16,
-      color: "bg-purple-100 text-purple-600",
     },
     {
       icon: ClockIcon,
@@ -136,7 +110,7 @@ const Home = () => {
   };
 
   return (
-    <div className="relative w-screen flex min-h-screen flex-col  bg-slate-50">
+    <div className="relative flex min-h-screen w-full flex-col bg-slate-50">
       <Sidebar />
       <Header />
 
@@ -186,18 +160,18 @@ const Home = () => {
             </div>
 
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {projects.map((project) => (
+              {getProjects?.map((project) => (
                 <Card
-                  key={project.id}
-                  title={project.name}
-                  subtitle={`${project.progress}% Completo`}
-                  image={project.image}
-                  badge={`${project.team} membros`}
-                  onClick={() => navigate(`/projects/${project.id}`)}
+                  key={project?.id}
+                  title={project?.name}
+                  subtitle={`${project?.progress}% Completo`}
+                  image={project?.image}
+                  badge={`${ProjectStatus[project?.status as ProjectStatus]}`}
+                  onClick={() => navigate(`/projects/${project?.id}`)}
                 >
                   <div className="space-y-3">
                     <p className="text-sm text-slate-600">
-                      {project.description}
+                      {project?.description}
                     </p>
                     <div>
                       <div className="mb-1 flex items-center justify-between text-xs">
@@ -205,13 +179,13 @@ const Home = () => {
                           Progresso
                         </span>
                         <span className="text-slate-500">
-                          {project.progress}%
+                          {project?.progress}%
                         </span>
                       </div>
                       <div className="h-2 rounded-full bg-slate-200">
                         <div
                           className="h-full rounded-full bg-blue-600 transition-all"
-                          style={{ width: `${project.progress}%` }}
+                          style={{ width: `${project?.progress}%` }}
                         />
                       </div>
                     </div>

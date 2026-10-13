@@ -199,8 +199,7 @@ const initialTeams: Team[] = [
   {
     id: "mobile",
     name: "Mobile Experience",
-    description:
-      "Equipe focada na experiencia dos aplicativos iOS e Android.",
+    description: "Equipe focada na experiencia dos aplicativos iOS e Android.",
     createdAt: "2026-01-21",
     role: "Membro",
     projectsCount: 3,
@@ -361,7 +360,8 @@ const Team = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState("");
 
-  const selectedTeam = teams.find((team) => team.id === selectedTeamId) ?? teams[0];
+  const selectedTeam =
+    teams.find((team) => team.id === selectedTeamId) ?? teams[0];
   const selectedMember =
     selectedTeam.members.find((member) => member.id === selectedMemberId) ??
     null;
@@ -384,7 +384,7 @@ const Team = () => {
     return selectedTeam.members.filter((member) =>
       `${member.name} ${member.email} ${member.title}`
         .toLowerCase()
-        .includes(memberSearch.toLowerCase())
+        .includes(memberSearch.toLowerCase()),
     );
   }, [memberSearch, selectedTeam.members]);
 
@@ -396,16 +396,16 @@ const Team = () => {
   const updateSelectedTeam = (updater: (team: Team) => Team) => {
     setTeams((currentTeams) =>
       currentTeams.map((team) =>
-        team.id === selectedTeam.id ? updater(team) : team
-      )
+        team.id === selectedTeam.id ? updater(team) : team,
+      ),
     );
   };
 
   const toggleFavorite = (teamId: string) => {
     setTeams((currentTeams) =>
       currentTeams.map((team) =>
-        team.id === teamId ? { ...team, isFavorite: !team.isFavorite } : team
-      )
+        team.id === teamId ? { ...team, isFavorite: !team.isFavorite } : team,
+      ),
     );
   };
 
@@ -477,7 +477,7 @@ const Team = () => {
           ? member.notes.map((note) =>
               note.id === editingNoteId
                 ? { ...note, content: noteDraft, updatedAt: today }
-                : note
+                : note,
             )
           : [
               {
@@ -494,7 +494,9 @@ const Team = () => {
     }));
     setNoteDraft("");
     setEditingNoteId(null);
-    showToast(editingNoteId ? "Anotacao atualizada." : "Anotacao privada salva.");
+    showToast(
+      editingNoteId ? "Anotacao atualizada." : "Anotacao privada salva.",
+    );
   };
 
   const handleDeleteNote = (noteId: string) => {
@@ -507,7 +509,7 @@ const Team = () => {
               ...member,
               notes: member.notes.filter((note) => note.id !== noteId),
             }
-          : member
+          : member,
       ),
     }));
     showToast("Anotacao excluida.");
@@ -517,7 +519,7 @@ const Team = () => {
     updateSelectedTeam((team) => ({
       ...team,
       members: team.members.map((member) =>
-        member.id === memberId ? { ...member, role: "Administrador" } : member
+        member.id === memberId ? { ...member, role: "Administrador" } : member,
       ),
       activities: ["Permissoes de membro atualizadas.", ...team.activities],
     }));
@@ -562,7 +564,7 @@ const Team = () => {
   ];
 
   return (
-    <div className="relative flex min-h-screen w-screen flex-col bg-slate-50">
+    <div className="relative flex min-h-screen w-full flex-col bg-slate-50">
       <Sidebar />
       <Header />
 
@@ -902,7 +904,11 @@ const Team = () => {
                 )}
               </div>
 
-              <TeamPanel team={selectedTeam} metricCards={metricCards} compact />
+              <TeamPanel
+                team={selectedTeam}
+                metricCards={metricCards}
+                compact
+              />
             </section>
           </div>
         </section>
@@ -932,11 +938,16 @@ const Team = () => {
           <div className="flex-1 space-y-6 overflow-y-auto p-6">
             <div>
               <h3 className="font-semibold text-slate-950">Biografia</h3>
-              <p className="mt-2 text-sm text-slate-600">{selectedMember.bio}</p>
+              <p className="mt-2 text-sm text-slate-600">
+                {selectedMember.bio}
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <StatBox label="Entrada" value={formatDate(selectedMember.joinedAt)} />
+              <StatBox
+                label="Entrada"
+                value={formatDate(selectedMember.joinedAt)}
+              />
               <StatBox
                 label="Projetos"
                 value={selectedMember.projects.length.toString()}
@@ -1189,13 +1200,7 @@ const Badge = ({
   </span>
 );
 
-const InfoPill = ({
-  icon,
-  label,
-}: {
-  icon: JSX.Element;
-  label: string;
-}) => (
+const InfoPill = ({ icon, label }: { icon: JSX.Element; label: string }) => (
   <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-2 text-xs font-medium text-slate-600">
     {icon}
     {label}
@@ -1257,7 +1262,9 @@ const TeamPanel = ({
         <h3 className="text-lg font-semibold text-slate-950">
           Painel da Equipe
         </h3>
-        <p className="text-sm text-slate-500">Indicadores e atividades recentes.</p>
+        <p className="text-sm text-slate-500">
+          Indicadores e atividades recentes.
+        </p>
       </div>
       <ChartBarIcon className="h-6 w-6 text-sky-600" />
     </div>

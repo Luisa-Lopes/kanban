@@ -13,8 +13,21 @@ export const TimestampToFormatDate = (timestamp: number): string => {
   return new Date(timestamp).toLocaleDateString("pt-BR");
 };
 
-export const formatDateForInput = (timestamp?: number) => {
+export const formatTimestampDateForInput = (timestamp?: number) => {
   if (!timestamp) return "";
 
   return new Date(timestamp).toISOString().split("T")[0];
+};
+
+export function formatDate(date: string | undefined): string {
+  if (!date) return "--/--/--";
+  return new Date(date).toLocaleDateString("pt-BR", {
+    timeZone: "UTC",
+  });
+}
+
+export const formatStringDateForInput = (dateString?: string) => {
+  if (!dateString) return "";
+
+  return new Date(dateString).toISOString().split("T")[0];
 };

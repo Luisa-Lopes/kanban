@@ -3,6 +3,15 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
   body {
     @apply font-serif;
   }
@@ -22,4 +31,69 @@
 .react-calendar__tile--rangeEnd {
   background: #2563eb !important;
   color: white !important;
+}
+
+.sprint-board-scroll {
+  overflow-x: scroll;
+  overflow-y: auto;
+  scrollbar-color: #64748b #e2e8f0;
+  scrollbar-width: auto;
+}
+
+.sprint-board-scroll::-webkit-scrollbar {
+  width: 14px;
+  height: 16px;
+}
+
+.sprint-board-scroll::-webkit-scrollbar-track {
+  border-radius: 9999px;
+  background: #cbd5e1;
+}
+
+.sprint-board-scroll::-webkit-scrollbar-thumb {
+  border: 3px solid #cbd5e1;
+  border-radius: 9999px;
+  background: #0369a1;
+}
+
+.sprint-board-scroll::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+.sprint-scroll-range {
+  appearance: none;
+  height: 16px;
+  background: transparent;
+}
+
+.sprint-scroll-range::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 9999px;
+  background: #cbd5e1;
+}
+
+.sprint-scroll-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 48px;
+  height: 16px;
+  margin-top: -4px;
+  border: 2px solid white;
+  border-radius: 9999px;
+  background: #0369a1;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 25%);
+}
+
+.sprint-scroll-range::-moz-range-track {
+  height: 8px;
+  border-radius: 9999px;
+  background: #e2e8f0;
+}
+
+.sprint-scroll-range::-moz-range-thumb {
+  width: 44px;
+  height: 12px;
+  border: 2px solid white;
+  border-radius: 9999px;
+  background: #0369a1;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 25%);
 }

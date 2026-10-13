@@ -31,7 +31,7 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className=" flex flex-col w-full bg-slate-100">
       {/* Header */}
       <header className="border-b bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
@@ -60,37 +60,39 @@ const LandingPage = () => {
       </section>
 
       {/* Benefícios */}
-      <section className="px-5 py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
+      <section className="flex w-full px-5 py-20">
+        <div className="flex flex-col w-full gap-6">
+          <div className="text-center flex flex-col gap-3">
             <h2 className="text-3xl font-bold text-slate-900">
               Tudo o que você precisa
             </h2>
 
-            <p className="mt-3 text-slate-600">
+            <p className="text-slate-600">
               Ferramentas para organizar projetos e aumentar a produtividade da
               equipe.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature) => {
               const Icon = feature.icon;
 
               return (
                 <div
                   key={feature.title}
-                  className="rounded-2xl bg-white p-8 shadow-sm"
+                  className="flex-shrink flex-col gap-3 rounded-2xl bg-white p-8 shadow-sm"
                 >
-                  <div className="mb-4 inline-flex rounded-2xl bg-sky-100 p-3 text-sky-600">
+                  <div className="flex w-fit shrink-0 rounded-2xl bg-sky-100 p-3 text-sky-600">
                     <Icon width={28} height={28} />
                   </div>
 
-                  <h3 className="mb-3 text-xl font-semibold">
+                  <h3 className="m-0 break-words text-xl font-semibold">
                     {feature.title}
                   </h3>
 
-                  <p className="text-slate-600">{feature.description}</p>
+                  <p className="m-0 break-words text-slate-600">
+                    {feature.description}
+                  </p>
                 </div>
               );
             })}
@@ -98,7 +100,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Estatísticas */}
+      {/* Estatísticas  */}
       <section className="bg-white px-5 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-6 md:grid-cols-3">
@@ -120,7 +122,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* CTA Final */}
       <section className="bg-sky-600 px-5 py-20 text-center text-white">
         <div className="mx-auto max-w-3xl">
           <h2 className="mb-4 text-4xl font-bold">

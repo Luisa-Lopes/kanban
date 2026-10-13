@@ -3,8 +3,8 @@ import { Button, Dropdown, Input, Modal } from "../../../../Layout";
 import { ICalendarEvent } from "../..";
 import {
   DateToTimestamp,
-  formatDateForInput,
-} from "../../../../utils/DatesFunctions";
+  formatTimestampDateForInput,
+} from "@/utils/DatesFunctions";
 
 interface IEventModal {
   isModalOpen: boolean;
@@ -26,10 +26,10 @@ const EventModal = ({
       type: event?.type ?? "",
       description: event?.description ?? "",
       startDate: event?.start
-        ? formatDateForInput(DateToTimestamp({ date: event?.start }))
+        ? formatTimestampDateForInput(DateToTimestamp({ date: event?.start }))
         : "",
       endDate: event?.end
-        ? formatDateForInput(DateToTimestamp({ date: event?.end }))
+        ? formatTimestampDateForInput(DateToTimestamp({ date: event?.end }))
         : event?.end,
     },
     onSubmit: (values) => {

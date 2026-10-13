@@ -1,307 +1,39 @@
 import "react-calendar/dist/Calendar.css";
 
 import Sprints from "./Components/Sprints";
-import { IDashboard } from "./types";
 import { PencilIcon } from "@heroicons/react/24/outline";
-import ModalEditProject from "./Components/ModalAddEditProject";
 import { useState } from "react";
 import ModalAddMember from "./Components/ModalAddMember";
 import { useSidebar } from "@/contexts/sidebarProvider";
 import Sidebar from "@/Layout/SideBar";
 import { Header } from "@/Layout/Header";
 import { Button, Card } from "@/Layout";
-import { TimestampToFormatDate } from "@/utils/DatesFunctions";
+import { formatDate, TimestampToFormatDate } from "@/utils/DatesFunctions";
 import ModalAddEditProject from "./Components/ModalAddEditProject";
-import ModalMainTaskCard from "./Components/Sprints/Components/ModalMainTaskCard";
-import { useGetProjects } from "../Projects/hooks/useGetProjects";
-import { useGetProject } from "../Projects/hooks/useGetProject";
-
-const project: IDashboard = {
-  id: "proj-001",
-  title: "Sistema de Gestão de Projetos",
-  description:
-    "Plataforma web para gerenciamento de projetos, tarefas, equipes e sprints da empresa.",
-
-  createdAt: 1750086000000,
-  status: "Em andamento",
-
-  team: [
-    {
-      id: "1",
-      name: "Ana Luísa",
-      role: "Gerente de Projeto",
-      avatar: "/avatars/ana.png",
-    },
-    {
-      id: "2",
-      name: "Pedro Henrique",
-      role: "Desenvolvedor Front-End",
-      avatar: "/avatars/pedro.png",
-    },
-    {
-      id: "3",
-      name: "Mariana Costa",
-      role: "UX/UI Designer",
-      avatar: "/avatars/mariana.png",
-    },
-    {
-      id: "4",
-      name: "Lucas Souza",
-      role: "Desenvolvedor Back-End",
-      avatar: "/avatars/lucas.png",
-    },
-    {
-      id: "1",
-      name: "Ana Luísa",
-      role: "Gerente de Projeto",
-      avatar: "/avatars/ana.png",
-    },
-    {
-      id: "2",
-      name: "Pedro Henrique",
-      role: "Desenvolvedor Front-End",
-      avatar: "/avatars/pedro.png",
-    },
-    {
-      id: "3",
-      name: "Mariana Costa",
-      role: "UX/UI Designer",
-      avatar: "/avatars/mariana.png",
-    },
-    {
-      id: "4",
-      name: "Lucas Souza",
-      role: "Desenvolvedor Back-End",
-      avatar: "/avatars/lucas.png",
-    },
-    {
-      id: "1",
-      name: "Ana Luísa",
-      role: "Gerente de Projeto",
-      avatar: "/avatars/ana.png",
-    },
-    {
-      id: "2",
-      name: "Pedro Henrique",
-      role: "Desenvolvedor Front-End",
-      avatar: "/avatars/pedro.png",
-    },
-    {
-      id: "3",
-      name: "Mariana Costa",
-      role: "UX/UI Designer",
-      avatar: "/avatars/mariana.png",
-    },
-    {
-      id: "4",
-      name: "Lucas Souza",
-      role: "Desenvolvedor Back-End",
-      avatar: "/avatars/lucas.png",
-    },
-    {
-      id: "1",
-      name: "Ana Luísa",
-      role: "Gerente de Projeto",
-      avatar: "/avatars/ana.png",
-    },
-    {
-      id: "2",
-      name: "Pedro Henrique",
-      role: "Desenvolvedor Front-End",
-      avatar: "/avatars/pedro.png",
-    },
-    {
-      id: "3",
-      name: "Mariana Costa",
-      role: "UX/UI Designer",
-      avatar: "/avatars/mariana.png",
-    },
-    {
-      id: "4",
-      name: "Lucas Souza",
-      role: "Desenvolvedor Back-End",
-      avatar: "/avatars/lucas.png",
-    },
-    {
-      id: "1",
-      name: "Ana Luísa",
-      role: "Gerente de Projeto",
-      avatar: "/avatars/ana.png",
-    },
-    {
-      id: "2",
-      name: "Pedro Henrique",
-      role: "Desenvolvedor Front-End",
-      avatar: "/avatars/pedro.png",
-    },
-    {
-      id: "3",
-      name: "Mariana Costa",
-      role: "UX/UI Designer",
-      avatar: "/avatars/mariana.png",
-    },
-    {
-      id: "4",
-      name: "Lucas Souza",
-      role: "Desenvolvedor Back-End",
-      avatar: "/avatars/lucas.png",
-    },
-  ],
-
-  metrics: {
-    totalTasks: 38,
-    completedTasks: 21,
-    inProgressTasks: 9,
-    overdueTasks: 2,
-  },
-
-  timeline: {
-    startDate: 1748732400000,
-    expectedEndDate: 1764543600000,
-    endDate: 0,
-  },
-  sprints: [
-    {
-      title: "Sprint 1 - Planejamento",
-      startDate: 1748732400000,
-      endDate: 1750028400000,
-
-      tasks: {
-        ToDo: [
-          {
-            id: "1",
-            title: "Definir arquitetura do sistema",
-            responsible: [
-              {
-                id: "2",
-                name: "Pedro Henrique",
-                role: "Desenvolvedor Front-End",
-                avatar: "/avatars/pedro.png",
-              },
-            ],
-          },
-        ],
-
-        InProgress: [
-          {
-            id: "2",
-            title: "Mapear requisitos com o cliente",
-            responsible: [
-              {
-                id: "2",
-                name: "Pedro Henrique",
-                role: "Desenvolvedor Front-End",
-                avatar: "/avatars/pedro.png",
-              },
-            ],
-          },
-        ],
-
-        Done: [
-          {
-            id: "3",
-            title: "Criar cronograma do projeto",
-          },
-          {
-            id: "4",
-            title: "Definir stack tecnológica",
-          },
-        ],
-      },
-    },
-
-    {
-      title: "Sprint 2 - Design e Protótipos",
-      startDate: 1750114800000,
-      endDate: 1751324400000,
-
-      tasks: {
-        ToDo: [
-          {
-            id: "5",
-            title: "Criar versão mobile do protótipo",
-          },
-        ],
-
-        InProgress: [
-          {
-            id: "6",
-            title: "Desenvolver design system",
-          },
-        ],
-
-        Done: [
-          {
-            id: "7",
-            title: "Criar wireframes",
-          },
-          {
-            id: "8",
-            title: "Validar protótipo com cliente",
-          },
-        ],
-      },
-    },
-
-    {
-      title: "Sprint 3 - Desenvolvimento Front-End",
-      startDate: 1751410800000,
-      endDate: 1752620400000,
-
-      tasks: {
-        ToDo: [
-          {
-            id: "9",
-            title: "Implementar dashboard de métricas",
-          },
-          {
-            id: "10",
-            title: "Criar página de equipes",
-          },
-        ],
-
-        InProgress: [
-          {
-            id: "11",
-            title: "Desenvolver componente Kanban",
-          },
-        ],
-
-        Done: [
-          {
-            id: "12",
-            title: "Configurar projeto React + Vite",
-          },
-          {
-            id: "13",
-            title: "Implementar autenticação",
-          },
-        ],
-      },
-    },
-  ],
-};
+import { useParams } from "react-router-dom";
+import { useGetProjectDetails } from "../Projects/hooks/useGetProjectDetails";
+import ModalAddSprint from "./Components/ModalAddSprint";
 
 const ProjectsDetails = () => {
   const { openSidebar } = useSidebar();
 
-  const { data: getProject } = useGetProject(6);
+  const { id } = useParams();
 
-  console.log(getProject);
+  const { data: projectData } = useGetProjectDetails(Number(id));
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isSprintModalOpen, setIsSprintModalOpen] = useState<boolean>(false);
   const [isModalMemberOpen, setIsModalMemberOpen] = useState<boolean>(false);
 
   return (
-    <div className="relative flex flex-col w-screen min-h-screen">
+    <div className="relative flex min-h-screen w-full flex-col">
       {openSidebar && <Sidebar />}
       <Header />
 
       {isModalOpen ? (
         <ModalAddEditProject
           setIsModalOpen={setIsModalOpen}
-          project={project}
+          project={projectData}
         />
       ) : (
         <main className="p-6 flex flex-col gap-6">
@@ -310,17 +42,17 @@ const ProjectsDetails = () => {
             <div className="flex justify-between items-start">
               <div>
                 <h1 className="text-3xl font-bold text-slate-900">
-                  {project.title}
+                  {projectData?.name}
                 </h1>
 
                 <p className="text-slate-600 mt-2 max-w-3xl">
-                  {project.description}
+                  {projectData?.description}
                 </p>
               </div>
 
               <div className="flex items-center gap-3">
                 <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-md text-sm font-medium">
-                  {project.status}
+                  {projectData?.endDate === "active" ? "Ativo" : "Inativo"}
                 </span>
 
                 <Button
@@ -339,21 +71,21 @@ const ProjectsDetails = () => {
               <div>
                 <p className="text-slate-500 text-sm">Início</p>
                 <p className="font-medium">
-                  {TimestampToFormatDate(project.timeline.startDate)}
+                  {formatDate(projectData?.startDate) || ""}
                 </p>
               </div>
               <div>
                 <p className="text-slate-500 text-sm">Previsão de término</p>
                 <p className="font-medium">
-                  {TimestampToFormatDate(project.timeline.expectedEndDate)}
+                  {formatDate(projectData?.estimatedDate) || ""}
                 </p>
               </div>
               <div>
                 <p className="text-slate-500 text-sm">Término </p>
 
                 <p className="font-medium">
-                  {project.timeline.endDate
-                    ? TimestampToFormatDate(project.timeline.endDate)
+                  {projectData?.endDate
+                    ? formatDate(projectData?.endDate)
                     : "Projeto em andamento"}
                 </p>
               </div>
@@ -365,28 +97,28 @@ const ProjectsDetails = () => {
             <div className="bg-white p-5 rounded-lg shadow-md">
               <p className="text-slate-500 text-sm">Total de tarefas</p>
               <h2 className="text-3xl font-bold">
-                {project.metrics.totalTasks}
+                {projectData?.metrics?.totalTasks || 0}
               </h2>
             </div>
 
             <div className="bg-white p-5 rounded-lg shadow-md">
               <p className="text-slate-500 text-sm">Concluídas</p>
               <h2 className="text-3xl font-bold text-green-600">
-                {project.metrics.completedTasks}
+                {projectData?.metrics?.completedTasks || 0}
               </h2>
             </div>
 
             <div className="bg-white p-5 rounded-lg shadow-md">
               <p className="text-slate-500 text-sm">Em andamento</p>
               <h2 className="text-3xl font-bold text-yellow-600">
-                {project.metrics.inProgressTasks}
+                {projectData?.metrics?.inProgressTasks || 0}
               </h2>
             </div>
 
             <div className="bg-white p-5 rounded-lg shadow-md">
               <p className="text-slate-500 text-sm">Atrasadas</p>
               <h2 className="text-3xl font-bold text-red-600">
-                {project.metrics.overdueTasks}
+                {projectData?.metrics?.overdueTasks || 0}
               </h2>
             </div>
           </section>
@@ -403,20 +135,24 @@ const ProjectsDetails = () => {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-80 overflow-auto p-5">
-              {project?.team?.map((member) => (
+              {projectData?.members?.map((member) => (
                 <div
                   key={member.id}
                   className="flex items-center justify-between border-b pb-3"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center font-bold">
-                      {member.name.charAt(0)}
+                      {member?.user?.firstName?.charAt(0) || ""}
                     </div>
 
                     <div>
-                      <p className="font-medium">{member.name}</p>
+                      <p className="font-medium">
+                        {member?.user?.firstName || ""}
+                      </p>
 
-                      <p className="text-sm text-slate-500">{member.role}</p>
+                      <p className="text-sm text-slate-500">
+                        {member?.role || ""}
+                      </p>
                     </div>
                   </div>
 
@@ -444,23 +180,28 @@ const ProjectsDetails = () => {
               Adicionar uma nova sprint
             </Button>
             <div className="flex flex-col gap-1">
-              {project.sprints.map((sprint) => (
-                <Sprints key={sprint.title} sprint={sprint} />
+              {projectData?.sprints.map((sprint) => (
+                <Sprints
+                  key={sprint.title}
+                  sprint={sprint}
+                  memberList={projectData?.members ?? []}
+                />
               ))}
             </div>
           </section>
         </main>
       )}
 
-      <ModalMainTaskCard
+      <ModalAddSprint
         isModalOpen={isSprintModalOpen}
         setIsModalOpen={setIsSprintModalOpen}
+        projectId={Number(id)}
       />
 
       <ModalAddMember
         isOpen={isModalMemberOpen}
         onClose={setIsModalMemberOpen}
-        onAdd={() => {}}
+        projectId={Number(id)}
       />
     </div>
   );

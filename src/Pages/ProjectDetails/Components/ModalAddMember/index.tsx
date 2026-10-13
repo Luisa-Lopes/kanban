@@ -1,26 +1,38 @@
 import { useFormik } from "formik";
-import { Button, Input, Modal } from "../../../../Layout";
+
 import { Dispatch, SetStateAction } from "react";
+import { createMember } from "@/services/member";
+import { ProjectRole } from "@/Interfaces/Projects";
+import { Button, Dropdown, Input, Modal } from "@/Layout";
 
 interface IModalAddMember {
   isOpen: boolean;
   onClose: Dispatch<SetStateAction<boolean>>;
-  onAdd: (member: { id: string; name: string; role: string }) => void;
+  projectId?: number;
 }
 
-const ModalAddMember = ({ isOpen, onClose, onAdd }: IModalAddMember) => {
+const ModalAddMember = ({ isOpen, onClose, projectId }: IModalAddMember) => {
   const formik = useFormik({
     initialValues: {
-      name: "",
+      email: "",
       role: "",
     },
 
-    onSubmit: (values) => {
-      onAdd({
-        id: crypto.randomUUID(),
-        name: values.name,
-        role: values.role,
-      });
+    onSubmit: async (values) => {
+      try {
+        if (!projectId) {
+          throw new Error("Project ID is required to add a member.");
+        }
+
+        await createMember({
+          projectId: projectId,
+          email: values.email,
+          role: ProjectRole["Admin"],
+        });
+      } catch (error) {
+        console.error("Error adding member:", error);
+      }
+      onClose(false);
     },
   });
 
@@ -34,18 +46,23 @@ const ModalAddMember = ({ isOpen, onClose, onAdd }: IModalAddMember) => {
 
       <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
         <Input
-          label="Nome"
-          name="name"
-          value={formik.values.name}
+          label="E-mail"
+          name="email"
+          value={formik.values.email}
           onChange={formik.handleChange}
         />
 
-        <Input
+        <Dropdown
+          options={[
+            { value: "Owner", label: "Dono" },
+            { value: "Admin", label: "Administrador" },
+            { value: "Member", label: "Membro" },
+          ]}
           label="Função"
           name="role"
           value={formik.values.role}
-          onChange={formik.handleChange}
-          placeholder="Ex: Desenvolvedor Front-End"
+          onChange={(value) => formik.setFieldValue("role", value)}
+          placeholder="Função do membro"
         />
 
         <div className="flex justify-end gap-3 mt-4">
