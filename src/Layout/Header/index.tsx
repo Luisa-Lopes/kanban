@@ -1,8 +1,11 @@
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import { useSidebar } from "../../contexts/sidebarProvider";
+import Button from "../Button";
+import { useAgentBar } from "@/contexts/agentBarProvider";
 
 export const Header = () => {
   const { setOpenSidebar } = useSidebar();
+  const { setOpenAgentBar } = useAgentBar();
 
   return (
     <header className="flex items-center justify-between gap-4 bg-sky-600 px-5 py-3 text-white shadow-md">
@@ -35,6 +38,14 @@ export const Header = () => {
           />
         </label>
       </div>
+
+      <Button
+        className="border border-white"
+        type="button"
+        onClick={() => setOpenAgentBar(true)}
+      >
+        IA-Manager
+      </Button>
     </header>
   );
 };
