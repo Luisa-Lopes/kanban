@@ -1,4 +1,5 @@
-import { Bars3Icon } from "@heroicons/react/24/solid";
+import { useEffect, useState } from "react";
+import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useSidebar } from "../../contexts/sidebarProvider";
 import Button from "../Button";
 import { useAgentBar } from "@/contexts/agentBarProvider";
@@ -6,6 +7,18 @@ import { useAgentBar } from "@/contexts/agentBarProvider";
 export const Header = () => {
   const { setOpenSidebar } = useSidebar();
   const { setOpenAgentBar } = useAgentBar();
+  const [openNotifications, setOpenNotifications] = useState(false);
+
+  useEffect(() => {
+    if (!openNotifications) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpenNotifications(false);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [openNotifications]);
 
   return (
     <header className="flex items-center justify-between gap-4 bg-sky-600 px-5 py-3 text-white shadow-md">
@@ -23,7 +36,7 @@ export const Header = () => {
           <p className="text-xs uppercase tracking-[0.24em] text-white/80">
             Painel
           </p>
-          <h1 className="text-lg font-semibold">Kanban</h1>
+          <h1 className="text-lg font-semibold">Gerenciador</h1>
         </div>
       </div>
 
@@ -39,13 +52,72 @@ export const Header = () => {
         </label>
       </div>
 
-      <Button
-        className="border border-white"
-        type="button"
-        onClick={() => setOpenAgentBar(true)}
-      >
-        IA-Manager
-      </Button>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setOpenNotifications(true)}
+          aria-label="Abrir notificações"
+          aria-haspopup="dialog"
+          aria-expanded={openNotifications}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20 transition hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+        >
+          <BellIcon className="h-6 w-6" />
+        </button>
+        <Button
+          className="border border-white"
+          type="button"
+          onClick={() => setOpenAgentBar(true)}
+        >
+          IA-Gerente
+        </Button>
+      </div>
+
+      {openNotifications && (
+        <div className="fixed inset-0 z-50">
+          <button
+            type="button"
+            className="absolute inset-0 bg-slate-950/30"
+            onClick={() => setOpenNotifications(false)}
+            aria-label="Fechar notificações"
+          />
+          <aside
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="notifications-title"
+            className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-white text-slate-900 shadow-2xl"
+          >
+            <div className="flex items-center justify-between border-b border-slate-200 bg-sky-700 px-5 py-4 text-white">
+              <div>
+                <h2 id="notifications-title" className="text-lg font-semibold">
+                  Notificações
+                </h2>
+                <p className="text-sm text-sky-100">
+                  Atualizações da sua conta
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpenNotifications(false)}
+                aria-label="Fechar notificações"
+                className="rounded-full p-2 transition hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/70"
+              >
+                <XMarkIcon className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="flex flex-1 items-center justify-center p-6 text-center">
+              <div>
+                <BellIcon className="mx-auto h-10 w-10 text-slate-300" />
+                <p className="mt-3 font-medium text-slate-700">
+                  Nenhuma notificação por enquanto
+                </p>
+                <p className="mt-1 text-sm text-slate-500">
+                  Quando você receber uma atualização, ela aparecerá aqui.
+                </p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      )}
     </header>
   );
 };

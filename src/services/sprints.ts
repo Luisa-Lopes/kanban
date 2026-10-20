@@ -5,10 +5,7 @@ export const createSprint = async (
   data: ISprint,
   projectId: number,
 ): Promise<ISprint> => {
-  const response = await postRequest<ISprint>(
-    `/project/${projectId}/sprints`,
-    data,
-  );
+  const response = await postRequest<ISprint>(`/sprints/${projectId}`, data);
   return response.data;
 };
 
@@ -17,7 +14,7 @@ export const updateSprint = async (
   projectId: number,
 ): Promise<ISprint> => {
   const response = await putRequest<ISprint>(
-    `/project/${projectId}/sprints/${data.id}`,
+    `/sprints/${projectId}/${data.id}`,
     data,
   );
 

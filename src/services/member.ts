@@ -1,10 +1,10 @@
-import { IProjectAddMember } from "@/Interfaces/Projects";
 import { postRequest } from "./api";
+import { IProjectInvitation } from "./invitations";
 
 export const createMember = async (
-  data: IProjectAddMember,
-): Promise<IProjectAddMember> => {
-  const response = await postRequest<IProjectAddMember>(
+  data: IProjectInvitation,
+): Promise<IProjectInvitation> => {
+  const response = await postRequest<IProjectInvitation>(
     "/projects/invitations",
     data,
   );

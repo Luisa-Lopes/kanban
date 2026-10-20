@@ -14,10 +14,11 @@ import ModalTaskColumn from "./Components/ModalTaskColumn";
 import {
   IProjectMember,
   IProjectSprint,
-  IProjectTask,
   TaskStatus,
 } from "@/Interfaces/Projects";
 import { updateTask } from "@/services/task";
+import { parseDate } from "@/utils/DatesFunctions";
+import { IProjectTask } from "@/Interfaces/task";
 
 interface ISprints {
   sprint: IProjectSprint;
@@ -68,7 +69,7 @@ const Sprints = ({ sprint, memberList }: ISprints) => {
     setTasks(sprint.tasks ?? []);
 
     if (sprint.startDate && sprint.endDate) {
-      setDate([new Date(sprint.startDate), new Date(sprint.endDate)]);
+      setDate([parseDate(sprint.startDate), parseDate(sprint.endDate)]);
     } else {
       setDate([new Date(), new Date()]);
     }
@@ -164,7 +165,7 @@ const Sprints = ({ sprint, memberList }: ISprints) => {
 
       <main
         className={`box-border w-full overflow-hidden transition-all duration-300 ease-in-out ${
-          clickSprint ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+          clickSprint ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div

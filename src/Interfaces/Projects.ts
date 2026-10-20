@@ -31,6 +31,13 @@ export enum ProjectStatus {
   Completed = 2,
 }
 
+export enum InvitationStatus {
+  Padding = 0,
+  Accepted = 1,
+  Expired = 2,
+  Cancelled = 3,
+}
+
 export interface IUserResponse {
   id: string;
   firstName: string;
@@ -72,6 +79,16 @@ export interface IProjectAddMember {
   name: string;
 }
 
+export interface IProjectInvitation {
+  createdAt: string;
+  email: string;
+  id: number;
+  invitesBy: string;
+  projectId: number;
+  role: ProjectRole;
+  status: InvitationStatus;
+}
+
 export interface IProjectsDetailed {
   id: number;
   name: string;
@@ -87,6 +104,7 @@ export interface IProjectsDetailed {
     overdueTasks: number;
     totalTasks: number;
   };
+  invitations: IProjectInvitation[];
 }
 
 export type IProjectsResponse = IResponse<IProjects[]>;

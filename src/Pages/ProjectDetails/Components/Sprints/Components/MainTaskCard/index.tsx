@@ -2,6 +2,7 @@ import { PencilIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { IProjectSprint } from "@/Interfaces/Projects";
 import ModalAddSprint from "../../../ModalAddSprint";
+import { formatDate, formatStringDateForInput } from "@/utils/DatesFunctions";
 
 interface IMainTaskCard {
   sprint: IProjectSprint;
@@ -43,10 +44,9 @@ const MainTaskCard = ({ sprint }: IMainTaskCard) => {
             </p>
             <p className="mt-1 text-xs font-medium text-slate-600">
               {sprint.startDate
-                ? new Date(sprint.startDate).toLocaleDateString("pt-BR")
+                ? formatDate(sprint.startDate)
                 : "Data não definida"}
-              {sprint.endDate &&
-                ` – ${new Date(sprint.endDate).toLocaleDateString("pt-BR")}`}
+              {sprint.endDate && ` – ${formatDate(sprint.endDate)}`}
             </p>
           </div>
         </div>

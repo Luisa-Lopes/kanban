@@ -19,6 +19,7 @@ const ModalAddSprint = ({
   projectId,
 }: IModalAddSprint) => {
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       id: sprint?.id || 0,
       title: sprint?.title || "",
@@ -127,6 +128,7 @@ const ModalAddSprint = ({
           </button>
 
           <Button
+            disabled={formik.isSubmitting}
             className="px-4 py-2 bg-blue-600 text-white rounded-md"
             type="submit"
           >

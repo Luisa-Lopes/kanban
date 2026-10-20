@@ -13,6 +13,7 @@ import ModalAddEditProject from "./Components/ModalAddEditProject";
 import { useParams } from "react-router-dom";
 import { useGetProjectDetails } from "../Projects/hooks/useGetProjectDetails";
 import ModalAddSprint from "./Components/ModalAddSprint";
+import { ProjectRole } from "@/Interfaces/Projects";
 
 const ProjectsDetails = () => {
   const { openSidebar } = useSidebar();
@@ -24,6 +25,11 @@ const ProjectsDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isSprintModalOpen, setIsSprintModalOpen] = useState<boolean>(false);
   const [isModalMemberOpen, setIsModalMemberOpen] = useState<boolean>(false);
+
+  const difference =
+    projectData?.endDate != undefined
+      ? new Date(projectData.endDate).getTime() - Date.now()
+      : 0;
 
   return (
     <div className="relative flex min-h-screen w-full flex-col">
@@ -52,7 +58,7 @@ const ProjectsDetails = () => {
 
               <div className="flex items-center gap-3">
                 <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-md text-sm font-medium">
-                  {projectData?.endDate === "active" ? "Ativo" : "Inativo"}
+                  {difference > 0 ? "Ativo" : "Inativo"}
                 </span>
 
                 <Button
@@ -151,8 +157,42 @@ const ProjectsDetails = () => {
                       </p>
 
                       <p className="text-sm text-slate-500">
-                        {member?.role || ""}
+                        {ProjectRole?.[member?.role] || ""}
                       </p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {}}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Excluir
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Project Invitations */}
+
+          <div className="flex flex-col bg-white rounded-lg p-6 shadow-sm">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Convites Enviados</h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-80 overflow-auto p-5">
+              {projectData?.invitations?.map((invitation) => (
+                <div
+                  key={invitation.id}
+                  className="flex items-center justify-between border-b pb-3"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center font-bold">
+                      {invitation?.email.charAt(0) || ""}
+                    </div>
+
+                    <div>
+                      <p className="font-medium">{invitation?.email || ""}</p>
                     </div>
                   </div>
 

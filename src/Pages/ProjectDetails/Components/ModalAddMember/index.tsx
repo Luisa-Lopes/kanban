@@ -11,11 +11,24 @@ interface IModalAddMember {
   projectId?: number;
 }
 
+type FormValues = {
+  email: string;
+  role: keyof typeof ProjectRole | "";
+};
+
 const ModalAddMember = ({ isOpen, onClose, projectId }: IModalAddMember) => {
-  const formik = useFormik({
+  const formik = useFormik<FormValues>({
     initialValues: {
       email: "",
       role: "",
+    },
+    validate: (values) => {
+      const errors: { email: string; role: string } = { email: "", role: "" };
+
+      if (!values.email) errors.email = "Campo obrigatório!";
+      if (!values.role) errors.role = "Campo obrigatório!";
+
+      return errors;
     },
 
     onSubmit: async (values) => {
@@ -24,10 +37,14 @@ const ModalAddMember = ({ isOpen, onClose, projectId }: IModalAddMember) => {
           throw new Error("Project ID is required to add a member.");
         }
 
+        if (!values.role) {
+          throw new Error("A role is required to add a member.");
+        }
+
         await createMember({
           projectId: projectId,
           email: values.email,
-          role: ProjectRole["Admin"],
+          role: ProjectRole[values.role],
         });
       } catch (error) {
         console.error("Error adding member:", error);

@@ -98,7 +98,7 @@ const AgentBar = () => {
       />
 
       <aside
-        aria-label="Conversa com Managerzinho"
+        aria-label="Conversa com Gerente"
         aria-hidden={!openAgentBar}
         className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
           openAgentBar ? "translate-x-0" : "translate-x-full"
@@ -164,7 +164,7 @@ const AgentBar = () => {
                 role="status"
                 className="rounded-2xl rounded-tl-sm bg-white px-4 py-3 text-sm text-slate-500 shadow-sm ring-1 ring-slate-200"
               >
-                Managerzinho está digitando…
+                Gerente está digitando…
               </p>
             </div>
           )}
