@@ -20,9 +20,8 @@ const Signin = () => {
         await signin(values.userName, values.password);
         navigate("/home");
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Erro ao realizar login.";
-        console.error(message);
+        const message = "Erro ao realizar login.";
+
         formik.setStatus(message);
       }
     },
