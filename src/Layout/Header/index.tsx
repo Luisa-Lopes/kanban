@@ -5,14 +5,13 @@ import Button from "../Button";
 import { useAgentBar } from "@/contexts/agentBarProvider";
 import { InvitationStatus, ProjectRole } from "@/Interfaces/Projects";
 import { useGetNotifications } from "@/Pages/Home/hooks/useGetNotifications";
-import { respondToInvitation } from "@/services/notification";
+import { respondToInvitation } from "@/services/invitations";
+import { useFormik } from "formik";
 
 export const Header = () => {
   const { setOpenSidebar } = useSidebar();
   const { setOpenAgentBar } = useAgentBar();
   const [openNotifications, setOpenNotifications] = useState(false);
-  const [respondingTo, setRespondingTo] = useState<number | null>(null);
-  const [responseError, setResponseError] = useState("");
   const {
     data: notifications,
     error,
@@ -20,21 +19,31 @@ export const Header = () => {
     mutate,
   } = useGetNotifications();
 
-  const handleInvitationResponse = async (
+  const formik = useFormik({
+    initialValues: {
+      invitationId: 0,
+      status: InvitationStatus.Accepted as
+        | InvitationStatus.Accepted
+        | InvitationStatus.Cancelled,
+    },
+    onSubmit: async (values, { setStatus }) => {
+      try {
+        await respondToInvitation(values.invitationId, values.status);
+        await mutate();
+        setStatus(undefined);
+      } catch {
+        setStatus("Não foi possível responder ao convite. Tente novamente.");
+      }
+    },
+  });
+
+  const handleInvitationResponse = (
     invitationId: number,
     status: InvitationStatus.Accepted | InvitationStatus.Cancelled,
   ) => {
-    setRespondingTo(invitationId);
-    setResponseError("");
-
-    try {
-      await respondToInvitation(invitationId, status);
-      await mutate();
-    } catch {
-      setResponseError("Não foi possível responder ao convite. Tente novamente.");
-    } finally {
-      setRespondingTo(null);
-    }
+    void formik
+      .setValues({ invitationId, status })
+      .then(() => formik.submitForm());
   };
 
   useEffect(() => {
@@ -171,7 +180,7 @@ export const Header = () => {
                         <div className="mt-4 flex gap-2">
                           <button
                             type="button"
-                            disabled={respondingTo !== null}
+                            disabled={formik.isSubmitting}
                             onClick={() =>
                               handleInvitationResponse(
                                 notification.invitationId,
@@ -180,13 +189,14 @@ export const Header = () => {
                             }
                             className="rounded-lg bg-sky-600 px-3 py-2 text-sm font-medium text-white hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-60"
                           >
-                            {respondingTo === notification.invitationId
+                            {formik.isSubmitting &&
+                            formik.values.invitationId === notification.invitationId
                               ? "Enviando..."
                               : "Aceitar"}
                           </button>
                           <button
                             type="button"
-                            disabled={respondingTo !== null}
+                            disabled={formik.isSubmitting}
                             onClick={() =>
                               handleInvitationResponse(
                                 notification.invitationId,
@@ -213,9 +223,9 @@ export const Header = () => {
                   </p>
                 </div>
               )}
-              {responseError && (
+              {formik.status && (
                 <p role="alert" className="mt-4 text-sm text-red-600">
-                  {responseError}
+                  {formik.status}
                 </p>
               )}
             </div>

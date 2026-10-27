@@ -23,33 +23,41 @@ const ModalAddMember = ({ isOpen, onClose, projectId }: IModalAddMember) => {
       role: "",
     },
     validate: (values) => {
-      const errors: { email: string; role: string } = { email: "", role: "" };
+      const errors: { email?: string; role?: string } = {};
 
-      if (!values.email) errors.email = "Campo obrigatório!";
+      if (!values.email.trim()) errors.email = "Campo obrigatório!";
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+        errors.email = "Informe um e-mail válido.";
+      }
       if (!values.role) errors.role = "Campo obrigatório!";
 
       return errors;
     },
 
-    onSubmit: async (values) => {
+    onSubmit: async (values, { setStatus, resetForm }) => {
       try {
         if (!projectId) {
-          throw new Error("Project ID is required to add a member.");
+          throw new Error("Não foi possível identificar o projeto.");
         }
 
         if (!values.role) {
-          throw new Error("A role is required to add a member.");
+          throw new Error("Selecione uma função para o membro.");
         }
 
         await createMember({
-          projectId: projectId,
-          email: values.email,
+          projectId,
+          email: values.email.trim(),
           role: ProjectRole[values.role],
         });
+        resetForm();
+        onClose(false);
       } catch (error) {
-        console.error("Error adding member:", error);
+        setStatus(
+          error instanceof Error
+            ? error.message
+            : "Não foi possível enviar o convite. Tente novamente.",
+        );
       }
-      onClose(false);
     },
   });
 
@@ -65,8 +73,12 @@ const ModalAddMember = ({ isOpen, onClose, projectId }: IModalAddMember) => {
         <Input
           label="E-mail"
           name="email"
+          type="email"
+          required
           value={formik.values.email}
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.email ? formik.errors.email : undefined}
         />
 
         <Dropdown
@@ -79,8 +91,18 @@ const ModalAddMember = ({ isOpen, onClose, projectId }: IModalAddMember) => {
           name="role"
           value={formik.values.role}
           onChange={(value) => formik.setFieldValue("role", value)}
+          onBlur={() => formik.setFieldTouched("role", true)}
           placeholder="Função do membro"
         />
+        {formik.touched.role && formik.errors.role && (
+          <p className="text-sm text-red-600">{formik.errors.role}</p>
+        )}
+
+        {formik.status && (
+          <p role="alert" className="text-sm text-red-600">
+            {formik.status}
+          </p>
+        )}
 
         <div className="flex justify-end gap-3 mt-4">
           <Button
@@ -91,7 +113,9 @@ const ModalAddMember = ({ isOpen, onClose, projectId }: IModalAddMember) => {
             Cancelar
           </Button>
 
-          <Button type="submit">Adicionar</Button>
+          <Button type="submit" disabled={formik.isSubmitting}>
+            {formik.isSubmitting ? "Enviando convite..." : "Adicionar"}
+          </Button>
         </div>
       </form>
     </Modal>
